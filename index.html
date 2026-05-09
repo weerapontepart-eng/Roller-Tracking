@@ -135,6 +135,7 @@
             display: flex;
             gap: 1rem;
             margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         button {
@@ -195,11 +196,13 @@
             text-align: left;
             font-weight: 600;
             color: #1e293b;
+            font-size: 0.9rem;
         }
 
         table td {
             padding: 1rem;
             border-bottom: 1px solid #e2e8f0;
+            font-size: 0.9rem;
         }
 
         table tbody tr:hover {
@@ -226,6 +229,11 @@
         .badge-carry {
             background-color: #cffafe;
             color: #164e63;
+        }
+
+        .badge-other {
+            background-color: #fef3c7;
+            color: #92400e;
         }
 
         .summary-grid {
@@ -284,13 +292,16 @@
             justify-content: space-around;
             height: 300px;
             gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
         }
 
         .bar {
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex: 1;
+            flex: 0 0 auto;
+            min-width: 60px;
         }
 
         .bar-fill {
@@ -299,6 +310,7 @@
             width: 100%;
             transition: all 0.3s ease;
             position: relative;
+            min-height: 20px;
         }
 
         .bar-fill:hover {
@@ -307,9 +319,10 @@
 
         .bar-label {
             margin-top: 0.5rem;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             color: #64748b;
             text-align: center;
+            word-break: break-word;
         }
 
         .bar-value {
@@ -319,6 +332,7 @@
             transform: translateX(-50%);
             font-weight: 600;
             color: #1e293b;
+            font-size: 0.875rem;
         }
 
         .empty-state {
@@ -330,6 +344,27 @@
         .empty-state p {
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #0891b2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .info-box {
@@ -345,21 +380,9 @@
             margin-bottom: 1rem;
         }
 
-        .info-box ol {
-            margin-left: 1.5rem;
+        .info-box p {
             color: #334155;
-        }
-
-        .info-box li {
             margin-bottom: 0.5rem;
-        }
-
-        .info-box code {
-            background: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-family: 'Courier New', monospace;
-            color: #0891b2;
         }
 
         footer {
@@ -377,6 +400,26 @@
 
         .export-btn:hover {
             background-color: #059669;
+        }
+
+        .search-box {
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+
+        .refresh-btn {
+            background-color: #8b5cf6;
+        }
+
+        .refresh-btn:hover {
+            background-color: #7c3aed;
         }
 
         @media (max-width: 768px) {
@@ -397,12 +440,16 @@
             }
 
             table {
-                font-size: 0.875rem;
+                font-size: 0.75rem;
             }
 
             table th,
             table td {
-                padding: 0.75rem;
+                padding: 0.5rem;
+            }
+
+            .chart {
+                height: 250px;
             }
         }
     </style>
@@ -410,7 +457,7 @@
 <body>
     <header>
         <h1>📊 Data Record System</h1>
-        <p>ระบบบันทึกข้อมูลการทำงานและสรุปผลประจำเดือน</p>
+        <p>ระบบบันทึกข้อมูลการทำงานและสรุปผลประจำเดือน (ดึงข้อมูลจาก Google Sheets)</p>
     </header>
 
     <div class="container">
@@ -437,6 +484,8 @@
                                 <option value="">เลือกประเภท</option>
                                 <option value="Impact">Impact</option>
                                 <option value="Carry">Carry</option>
+                                <option value="Return ยาง">Return ยาง</option>
+                                <option value="Flat Return">Flat Return</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -455,8 +504,15 @@
                                 <option value="S1">S1</option>
                                 <option value="S2C">S2C</option>
                                 <option value="S2B">S2B</option>
+                                <option value="S2A">S2A</option>
                                 <option value="S2">S2</option>
                                 <option value="S3">S3</option>
+                                <option value="S5">S5</option>
+                                <option value="B1">B1</option>
+                                <option value="B2">B2</option>
+                                <option value="B3">B3</option>
+                                <option value="BWA2">BWA2</option>
+                                <option value="C2">C2</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -473,7 +529,7 @@
                         </div>
                         <div class="form-group">
                             <label>เทคโนโลยี</label>
-                            <input type="text" id="tech" placeholder="เช่น ม.ค.">
+                            <input type="text" id="tech" placeholder="เช่น นายศราวุธ">
                         </div>
                         <div class="form-group">
                             <label>สาเหตุ</label>
@@ -492,14 +548,10 @@
             </div>
 
             <div class="info-box">
-                <h3>💡 คำแนะนำการกรอกข้อมูล</h3>
-                <ol>
-                    <li>กรอกวันที่ในรูปแบบ เช่น <code>1-ม.ค.</code></li>
-                    <li>เลือกประเภท Impact หรือ Carry</li>
-                    <li>กรอกค่า SMU เป็นตัวเลขทศนิยม เช่น <code>66.436</code></li>
-                    <li>ฟิลด์อื่นๆ สามารถกรอกเพิ่มเติมหรือปล่อยว่างได้</li>
-                    <li>ข้อมูลจะถูกบันทึกอัตโนมัติใน Local Storage</li>
-                </ol>
+                <h3>💡 คำแนะนำการใช้งาน</h3>
+                <p><strong>ข้อมูลจาก Google Sheets:</strong> ระบบจะดึงข้อมูลจาก Google Sheets ของคุณโดยอัตโนมัติ</p>
+                <p><strong>เพิ่มข้อมูลใหม่:</strong> กรอกแบบฟอร์มด้านบนเพื่อเพิ่มบันทึกใหม่ (บันทึกใน Local Storage)</p>
+                <p><strong>ดูข้อมูลทั้งหมด:</strong> ไปที่แท็บ "ข้อมูล" เพื่อดูข้อมูลจาก Google Sheets + ข้อมูลใหม่ที่เพิ่มเข้ามา</p>
             </div>
         </div>
 
@@ -509,7 +561,11 @@
                 <h2>บันทึกข้อมูลทั้งหมด</h2>
                 <div style="margin-bottom: 1rem; color: #64748b;">
                     จำนวนทั้งหมด: <strong id="totalCount">0</strong> รายการ
-                    <button class="export-btn" onclick="exportCSV()" style="margin-left: 1rem;">⬇ ส่งออก CSV</button>
+                    <button class="refresh-btn" onclick="loadDataFromSheet()" style="margin-left: 1rem;">🔄 รีเฟรชข้อมูล</button>
+                    <button class="export-btn" onclick="exportCSV()" style="margin-left: 0.5rem;">⬇ ส่งออก CSV</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 ค้นหา..." onkeyup="filterTable()">
                 </div>
                 <div id="dataTableContainer"></div>
             </div>
@@ -527,19 +583,72 @@
     </footer>
 
     <script>
-        // Data Management
-        const STORAGE_KEY = 'data_records';
+        // Google Sheets Configuration
+        const SHEET_ID = '1ldhsqOTwWPTjUZ4O4e2jZqntQrvf2kSXVy1YLFU-1t8';
+        const SHEET_NAME = 'ชีต1'; // ชีต1 is the first sheet
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+        
+        const STORAGE_KEY = 'data_records_local';
         const MONTHS_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-        const MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        
+        let allData = [];
 
-        // Load data from localStorage
-        function loadData() {
+        // Parse CSV data
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const obj = {};
+                const currentLine = lines[i].split(',');
+                
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = currentLine[j] ? currentLine[j].trim().replace(/^"|"$/g, '') : '';
+                }
+                
+                if (obj.id && obj.date) {
+                    data.push(obj);
+                }
+            }
+
+            return data;
+        }
+
+        // Load data from Google Sheets
+        async function loadDataFromSheet() {
+            const container = document.getElementById('dataTableContainer');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>กำลังโหลดข้อมูล...</p></div>';
+
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error('ไม่สามารถดึงข้อมูลจาก Google Sheets');
+                
+                const csv = await response.text();
+                const sheetData = parseCSV(csv);
+                
+                // Get local data
+                const localData = getLocalData();
+                
+                // Combine data
+                allData = [...sheetData, ...localData];
+                
+                renderDataTable();
+                renderSummary();
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = `<div class="empty-state"><p>❌ ไม่สามารถดึงข้อมูลจาก Google Sheets</p><p style="font-size: 0.9rem; color: #94a3b8;">${error.message}</p></div>`;
+            }
+        }
+
+        // Get local data from localStorage
+        function getLocalData() {
             const stored = localStorage.getItem(STORAGE_KEY);
             return stored ? JSON.parse(stored) : [];
         }
 
-        // Save data to localStorage
-        function saveData(records) {
+        // Save local data
+        function saveLocalData(records) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
         }
 
@@ -570,29 +679,27 @@
                 fix: document.getElementById('fix').value,
             };
 
-            const records = loadData();
-            records.push(record);
-            saveData(records);
+            const localData = getLocalData();
+            localData.push(record);
+            saveLocalData(localData);
 
             alert('✓ บันทึกข้อมูลสำเร็จ');
             this.reset();
             setDefaultDate();
-            renderDataTable();
-            renderSummary();
+            loadDataFromSheet();
         });
 
         // Render data table
         function renderDataTable() {
-            const records = loadData();
             const container = document.getElementById('dataTableContainer');
 
-            if (records.length === 0) {
+            if (allData.length === 0) {
                 container.innerHTML = '<div class="empty-state"><p>ยังไม่มีข้อมูลบันทึก</p></div>';
                 document.getElementById('totalCount').textContent = '0';
                 return;
             }
 
-            document.getElementById('totalCount').textContent = records.length;
+            document.getElementById('totalCount').textContent = allData.length;
 
             let html = `
                 <table>
@@ -603,7 +710,10 @@
                             <th>SMU</th>
                             <th>BW</th>
                             <th>พื้นที่</th>
+                            <th>ตารางที่</th>
+                            <th>กลุ่ม</th>
                             <th>ลูกกลิ้ง</th>
+                            <th>เทคโนโลยี</th>
                             <th>สาเหตุ</th>
                             <th>แก้ไข</th>
                             <th>ลบ</th>
@@ -612,10 +722,13 @@
                     <tbody>
             `;
 
-            records.forEach((record, index) => {
-                const badge = record.type === 'Impact' 
-                    ? `<span class="badge badge-impact">${record.type}</span>`
-                    : `<span class="badge badge-carry">${record.type}</span>`;
+            allData.forEach((record) => {
+                let badgeClass = 'badge-other';
+                if (record.type === 'Impact') badgeClass = 'badge-impact';
+                else if (record.type === 'Carry') badgeClass = 'badge-carry';
+
+                const badge = `<span class="badge ${badgeClass}">${record.type}</span>`;
+                const isLocal = record.id && record.id.length > 10; // Local records have timestamp IDs
 
                 html += `
                     <tr>
@@ -624,10 +737,13 @@
                         <td>${record.smu}</td>
                         <td>${record.bw || '-'}</td>
                         <td>${record.area || '-'}</td>
+                        <td>${record.table || '-'}</td>
+                        <td>${record.group || '-'}</td>
                         <td>${record.roller || '-'}</td>
+                        <td>${record.tech || '-'}</td>
                         <td>${record.cause || '-'}</td>
                         <td>${record.fix || '-'}</td>
-                        <td><button class="btn-danger" onclick="deleteRecord('${record.id}')">ลบ</button></td>
+                        <td>${isLocal ? `<button class="btn-danger" onclick="deleteLocalRecord('${record.id}')">ลบ</button>` : '-'}</td>
                     </tr>
                 `;
             });
@@ -640,26 +756,97 @@
             container.innerHTML = html;
         }
 
-        // Delete record
-        function deleteRecord(id) {
+        // Filter table
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('dataTableContainer');
+            
+            const filtered = allData.filter(r => 
+                (r.date && r.date.toLowerCase().includes(searchInput)) ||
+                (r.type && r.type.toLowerCase().includes(searchInput)) ||
+                (r.smu && r.smu.toLowerCase().includes(searchInput)) ||
+                (r.area && r.area.toLowerCase().includes(searchInput)) ||
+                (r.cause && r.cause.toLowerCase().includes(searchInput))
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>ไม่พบข้อมูลที่ตรงกับการค้นหา</p></div>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>วันที่</th>
+                            <th>ประเภท</th>
+                            <th>SMU</th>
+                            <th>BW</th>
+                            <th>พื้นที่</th>
+                            <th>ตารางที่</th>
+                            <th>กลุ่ม</th>
+                            <th>ลูกกลิ้ง</th>
+                            <th>เทคโนโลยี</th>
+                            <th>สาเหตุ</th>
+                            <th>แก้ไข</th>
+                            <th>ลบ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            filtered.forEach((record) => {
+                let badgeClass = 'badge-other';
+                if (record.type === 'Impact') badgeClass = 'badge-impact';
+                else if (record.type === 'Carry') badgeClass = 'badge-carry';
+
+                const badge = `<span class="badge ${badgeClass}">${record.type}</span>`;
+                const isLocal = record.id && record.id.length > 10;
+
+                html += `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>${badge}</td>
+                        <td>${record.smu}</td>
+                        <td>${record.bw || '-'}</td>
+                        <td>${record.area || '-'}</td>
+                        <td>${record.table || '-'}</td>
+                        <td>${record.group || '-'}</td>
+                        <td>${record.roller || '-'}</td>
+                        <td>${record.tech || '-'}</td>
+                        <td>${record.cause || '-'}</td>
+                        <td>${record.fix || '-'}</td>
+                        <td>${isLocal ? `<button class="btn-danger" onclick="deleteLocalRecord('${record.id}')">ลบ</button>` : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Delete local record
+        function deleteLocalRecord(id) {
             if (confirm('ต้องการลบข้อมูลนี้ใช่ไหม?')) {
-                let records = loadData();
-                records = records.filter(r => r.id !== id);
-                saveData(records);
-                renderDataTable();
-                renderSummary();
+                let localData = getLocalData();
+                localData = localData.filter(r => r.id !== id);
+                saveLocalData(localData);
+                loadDataFromSheet();
             }
         }
 
         // Render summary
         function renderSummary() {
-            const records = loadData();
             const today = new Date();
             const currentMonth = today.getMonth() + 1;
-            const currentYear = today.getFullYear();
 
             // Filter by month
-            const monthlyRecords = records.filter(r => {
+            const monthlyRecords = allData.filter(r => {
+                if (!r.date) return false;
                 const parts = r.date.split('-');
                 const monthStr = parts[1];
                 const monthMap = {
@@ -774,11 +961,11 @@
             if (Object.keys(causeMap).length > 0) {
                 const causes = Object.entries(causeMap)
                     .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5);
+                    .slice(0, 10);
                 const maxCause = Math.max(...causes.map(c => c[1]));
                 html += `
                     <div class="chart-container">
-                        <h3>สาเหตุหลัก (Top 5)</h3>
+                        <h3>สาเหตุหลัก (Top 10)</h3>
                         <div class="chart">
                 `;
                 causes.forEach(([cause, count]) => {
@@ -787,7 +974,7 @@
                             <div class="bar-fill" style="height: ${(count / maxCause) * 100}%;">
                                 <div class="bar-value">${count}</div>
                             </div>
-                            <div class="bar-label">${cause}</div>
+                            <div class="bar-label">${cause || 'ว่าง'}</div>
                         </div>
                     `;
                 });
@@ -802,8 +989,7 @@
 
         // Export to CSV
         function exportCSV() {
-            const records = loadData();
-            if (records.length === 0) {
+            if (allData.length === 0) {
                 alert('ไม่มีข้อมูลให้ส่งออก');
                 return;
             }
@@ -811,7 +997,7 @@
             const headers = ['ID', 'วันที่', 'ประเภท', 'SMU', 'BW', 'พื้นที่', 'ตารางที่', 'กลุ่ม', 'ลูกกลิ้ง', 'เทคโนโลยี', 'สาเหตุ', 'แก้ไข'];
             let csv = headers.join(',') + '\n';
 
-            records.forEach(r => {
+            allData.forEach(r => {
                 csv += [r.id, r.date, r.type, r.smu, r.bw, r.area, r.table, r.group, r.roller, r.tech, r.cause, r.fix]
                     .map(cell => `"${cell || ''}"`)
                     .join(',') + '\n';
@@ -827,7 +1013,6 @@
 
         // Switch tabs
         function switchTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -835,11 +1020,9 @@
                 btn.classList.remove('active');
             });
 
-            // Show selected tab
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
 
-            // Render data if needed
             if (tabName === 'data') {
                 renderDataTable();
             } else if (tabName === 'summary') {
@@ -850,8 +1033,7 @@
         // Initialize
         window.addEventListener('DOMContentLoaded', function() {
             setDefaultDate();
-            renderDataTable();
-            renderSummary();
+            loadDataFromSheet();
         });
     </script>
 </body>
