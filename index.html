@@ -1,886 +1,858 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roller Tracking — BTT</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:#0f1117;--bg2:#161b26;--bg3:#1e2535;--bg4:#252d40;
-  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
-  --text:#e8eaf2;--text2:#8891aa;--text3:#4a5268;
-  --accent:#3d8ef0;--accent2:#2563c0;
-  --green:#2ecc71;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
-  --font:'IBM Plex Sans Thai',sans-serif;--mono:'IBM Plex Mono',monospace;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Record System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* SETUP BANNER */
-.setup-banner{background:rgba(245,158,11,.08);border-bottom:1px solid rgba(245,158,11,.25);padding:.6rem 1.5rem;display:flex;align-items:center;gap:10px;font-size:12px;color:#fbbf24}
-.setup-banner strong{color:#f59e0b}
-.setup-banner a{color:#fbbf24;text-decoration:underline;cursor:pointer}
-.setup-banner.hidden{display:none}
-.setup-banner input{background:var(--bg3);border:1px solid rgba(245,158,11,.4);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:11px;padding:4px 8px;outline:none;width:420px}
-.setup-banner input:focus{border-color:#f59e0b}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
 
-/* TOPBAR */
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:1.5rem;position:sticky;top:0;z-index:100}
-.logo{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--accent2);padding:3px 10px;border-radius:4px;flex-shrink:0}
-.nav-tabs{display:flex;gap:2px;flex:1}
-.nav-tab{padding:6px 14px;font-size:13px;color:var(--text2);cursor:pointer;border-radius:6px;display:flex;align-items:center;gap:6px;transition:all .15s;border:1px solid transparent}
-.nav-tab:hover{background:var(--bg3);color:var(--text)}
-.nav-tab.active{background:var(--bg3);color:var(--text);border-color:var(--border2)}
-.nav-tab svg{width:15px;height:15px;flex-shrink:0}
-.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-left:auto}
-.status-dot.ok{background:var(--green)}
-.status-dot.err{background:var(--red)}
-.status-dot.wait{background:var(--amber)}
-.total-pill{font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--border2);padding:3px 10px;border-radius:99px;color:var(--text2)}
-.total-pill span{color:var(--accent);font-weight:500}
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 2rem;
+            border-bottom: 4px solid #0891b2;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-/* LOADING OVERLAY */
-.loading-overlay{position:fixed;inset:0;background:rgba(15,17,23,.7);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
-.loading-overlay.hidden{display:none}
-.spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
 
-.main{flex:1;padding:1.5rem;max-width:1200px;margin:0 auto;width:100%}
-.page{display:none;animation:fadeIn .2s ease}
-.page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
 
-.page-header{margin-bottom:1.5rem}
-.page-header h1{font-size:20px;font-weight:600;letter-spacing:-.01em}
-.page-header p{font-size:12px;color:var(--text2);margin-top:3px}
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1rem}
-.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;display:flex;align-items:center;gap:6px}
-.card-title::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px}
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
 
-.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.form-grid.two{grid-template-columns:1fr 1fr}
-.fg{display:flex;flex-direction:column;gap:5px}
-.fg.full{grid-column:1/-1}
-.fg label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.fg input,.fg select{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;transition:border-color .15s,box-shadow .15s;outline:none;width:100%}
-.fg select option{background:var(--bg3)}
-.fg input:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(61,142,240,.15)}
-.fg input::placeholder{color:var(--text3)}
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
 
-.btn-row{display:flex;gap:8px;margin-top:1.25rem}
-.btn{padding:8px 18px;border-radius:7px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);display:flex;align-items:center;gap:6px;transition:all .15s}
-.btn:hover{background:var(--bg4);color:var(--text)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary{background:var(--accent2);border-color:var(--accent);color:#fff}
-.btn-primary:hover{background:#1a52a8;color:#fff}
-.btn svg{width:14px;height:14px;flex-shrink:0}
+        .tab-btn.active {
+            color: #0891b2;
+            border-bottom-color: #0891b2;
+        }
 
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
-.metric{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;position:relative;overflow:hidden}
-.metric::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--mcolor,var(--accent));border-radius:0 0 10px 10px}
-.metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
-.metric-value{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1}
-.metric-sub{font-size:11px;color:var(--text3);margin-top:4px}
+        .tab-btn:hover {
+            color: #0f172a;
+        }
 
-.table-toolbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
-.table-toolbar input,.table-toolbar select{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:12px;padding:6px 10px;outline:none}
-.table-toolbar input{min-width:180px}
-.table-toolbar input::placeholder{color:var(--text3)}
-.table-toolbar input:focus,.table-toolbar select:focus{border-color:var(--accent)}
-.count-info{font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--mono)}
+        .tab-content {
+            display: none;
+        }
 
-.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.table-wrap table{width:100%;border-collapse:collapse;font-size:12px}
-.table-wrap thead tr{background:var(--bg3)}
-.table-wrap th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;border-bottom:1px solid var(--border)}
-.table-wrap td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
-.table-wrap tbody tr:last-child td{border-bottom:none}
-.table-wrap tbody tr:hover td{background:rgba(255,255,255,.02)}
-.table-wrap .empty-td{text-align:center;padding:2rem;color:var(--text3)}
+        .tab-content.active {
+            display: block;
+        }
 
-/* PAGINATION */
-.pagination{display:flex;align-items:center;gap:6px;padding:.75rem 1rem;border-top:1px solid var(--border);justify-content:center}
-.pg-btn{padding:4px 10px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:var(--mono)}
-.pg-btn:hover{background:var(--bg4);color:var(--text)}
-.pg-btn.active{background:var(--accent2);border-color:var(--accent);color:#fff}
-.pg-btn:disabled{opacity:.3;cursor:not-allowed}
-.pg-info{font-size:11px;color:var(--text3);font-family:var(--mono);padding:0 8px}
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #0891b2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
 
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:.04em;font-family:var(--mono)}
-.b-impact{background:rgba(61,142,240,.15);color:#60a5fa;border:1px solid rgba(61,142,240,.25)}
-.b-carry{background:rgba(46,204,113,.12);color:#4ade80;border:1px solid rgba(46,204,113,.2)}
-.b-return{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
-.b-flat{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
-.b-other{background:rgba(100,116,139,.12);color:#94a3b8;border:1px solid rgba(100,116,139,.2)}
-.b-cause{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
-.b-fix{background:rgba(6,182,212,.12);color:#22d3ee;border:1px solid rgba(6,182,212,.2)}
+        .form-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
 
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
-.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
-.chart-card.wide{grid-column:1/-1}
-.chart-card-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.07em}
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-.report-filter{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
-.report-filter label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
-.report-filter select{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none}
-.report-filter select:focus{border-color:var(--accent)}
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-.summary-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem}
-.summary-card table{width:100%;border-collapse:collapse;font-size:12px}
-.summary-card th{background:var(--bg3);padding:8px 14px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
-.summary-card td{padding:8px 14px;border-bottom:1px solid var(--border);color:var(--text2)}
-.summary-card tbody tr:last-child td{border-bottom:none}
-.summary-card tbody tr:hover td{background:rgba(255,255,255,.02)}
-.summary-card td.num{font-family:var(--mono);color:var(--text);text-align:right}
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #334155;
+            font-size: 0.95rem;
+        }
 
-.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.export-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem}
-.export-card h3{font-size:13px;font-weight:600;margin-bottom:6px}
-.export-card p{font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.5}
-.danger-card{border-color:rgba(239,68,68,.25)}
-.danger-card h3{color:#f87171}
-.file-input{background:var(--bg3);border:1px dashed var(--border2);border-radius:6px;padding:.75rem 1rem;font-size:12px;color:var(--text2);cursor:pointer;width:100%}
+        .form-group label .required {
+            color: #ef4444;
+        }
 
-.prev-box{background:rgba(61,142,240,.06);border:1px solid rgba(61,142,240,.2);border-radius:8px;padding:.75rem 1rem;font-size:12px;color:var(--text2);display:none;margin-top:1rem;font-family:var(--mono);line-height:1.6}
-.prev-box strong{color:var(--accent)}
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
 
-.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text);opacity:0;transform:translateY(8px);transition:all .25s;z-index:9999;display:flex;align-items:center;gap:8px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.toast.show{opacity:1;transform:none}
-.toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0891b2;
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+        }
 
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
 
-@media(max-width:768px){
-  .form-grid{grid-template-columns:1fr 1fr}
-  .metrics{grid-template-columns:1fr 1fr}
-  .chart-grid{grid-template-columns:1fr}
-  .chart-card.wide{grid-column:1}
-  .export-grid{grid-template-columns:1fr}
-  .nav-tab span{display:none}
-}
-</style>
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: #0891b2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0e7490;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        table thead {
+            background-color: #f1f5f9;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-impact {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-carry {
+            background-color: #cffafe;
+            color: #164e63;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #0891b2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .summary-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0891b2;
+            font-family: 'Courier New', monospace;
+        }
+
+        .summary-card .percentage {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 300px;
+            gap: 1rem;
+        }
+
+        .bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .bar-fill {
+            background: linear-gradient(180deg, #0891b2 0%, #06b6d4 100%);
+            border-radius: 0.25rem 0.25rem 0 0;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .bar-fill:hover {
+            opacity: 0.8;
+        }
+
+        .bar-label {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #0891b2;
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            color: #0f172a;
+            margin-bottom: 1rem;
+        }
+
+        .info-box ol {
+            margin-left: 1.5rem;
+            color: #334155;
+        }
+
+        .info-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box code {
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            color: #0891b2;
+        }
+
+        footer {
+            background: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            border-top: 4px solid #0891b2;
+        }
+
+        .export-btn {
+            background-color: #10b981;
+        }
+
+        .export-btn:hover {
+            background-color: #059669;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            table th,
+            table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>📊 Data Record System</h1>
+        <p>ระบบบันทึกข้อมูลการทำงานและสรุปผลประจำเดือน</p>
+    </header>
 
-<!-- SETUP BANNER -->
-<div class="setup-banner" id="setup-banner">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-  <strong>ยังไม่ได้ตั้งค่า:</strong> วางลิงก์ Apps Script Web App URL ที่นี่ →
-  <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/XXXXX/exec" />
-  <button class="btn btn-primary" style="padding:4px 12px;font-size:12px" onclick="saveScriptUrl()">บันทึก</button>
-  <a onclick="showHelp()">วิธีได้ URL?</a>
-</div>
-
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="logo">BTT · ROLLER</div>
-  <nav class="nav-tabs">
-    <div class="nav-tab active" onclick="showPage('form')" id="nav-form">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
-      <span>บันทึกข้อมูล</span>
-    </div>
-    <div class="nav-tab" onclick="showPage('data')" id="nav-data">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M3 6h18M3 14h12M3 18h9"/></svg>
-      <span>ข้อมูลทั้งหมด</span>
-    </div>
-    <div class="nav-tab" onclick="showPage('report')" id="nav-report">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18h3v-7H3zM10 18h3V5h-3zM17 18h3v-4h-3z"/></svg>
-      <span>สรุปประจำเดือน</span>
-    </div>
-    <div class="nav-tab" onclick="showPage('export')" id="nav-export">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      <span>ส่งออก / นำเข้า</span>
-    </div>
-  </nav>
-  <div style="display:flex;align-items:center;gap:.75rem;margin-left:auto">
-    <div class="status-dot wait" id="conn-dot" title="กำลังเชื่อมต่อ..."></div>
-    <div class="total-pill">รวม <span id="total-count">—</span> รายการ</div>
-  </div>
-</header>
-
-<!-- LOADING -->
-<div class="loading-overlay hidden" id="loading">
-  <div class="spinner"></div>
-</div>
-
-<main class="main">
-
-<!-- ===== FORM ===== -->
-<div class="page active" id="page-form">
-  <div class="page-header">
-    <h1>บันทึกการเปลี่ยนลูกกลิ้ง</h1>
-    <p>ข้อมูลจะบันทึกลง Google Sheets ทันที</p>
-  </div>
-  <div class="card">
-    <div class="card-title">ข้อมูลทั่วไป</div>
-    <div class="form-grid">
-      <div class="fg"><label>วันที่เปลี่ยน *</label><input type="date" id="f-date"/></div>
-      <div class="fg"><label>ตัวเลข SMU</label><input type="number" id="f-smu" placeholder="เช่น 53661"/></div>
-      <div class="fg"><label>Belt Width (BW) *</label>
-        <select id="f-bw">
-          <option value="">— เลือก BW —</option>
-          <option value="1600">BW 1600</option><option value="1800">BW 1800</option>
-          <option value="2200">BW 2200</option><option value="2400">BW 2400</option>
-        </select>
-      </div>
-      <div class="fg"><label>Type ลูกกลิ้ง *</label>
-        <select id="f-type">
-          <option value="">— เลือก Type —</option>
-          <option>Impact</option><option>Carry</option><option>Return เหล็ก</option>
-          <option>Return ยาง</option><option>Flat Return</option>
-          <option>Flat Return ปรับโต๊ะนอน</option><option>Inverted</option>
-          <option>Vertical</option><option>Transition</option>
-        </select>
-      </div>
-      <div class="fg"><label>พื้นที่ (ไลน์) *</label>
-        <select id="f-area">
-          <option value="">— เลือกพื้นที่ —</option>
-          <optgroup label="Line S"><option>S1</option><option>S2A</option><option>S2B</option><option>S2C</option><option>S2</option><option>S3</option><option>S4</option><option>S5</option></optgroup>
-          <optgroup label="Line C"><option>C1</option><option>C2</option><option>C3</option></optgroup>
-          <optgroup label="Line B"><option>B1</option><option>B2</option><option>B3</option></optgroup>
-          <optgroup label="อื่นๆ"><option>SPD</option><option>BWE1</option><option>BWE2</option><option>CR1</option><option>CR2</option><option>CR3</option><option>BWA1</option><option>BWA2</option><option>S4 In B2</option><option>S4 In S5</option><option>S4 In C1</option><option>S5 In C2</option><option>C2 In Cr1</option><option>C2 In Cr2</option><option>C2 In Cr3</option><option>C1 In Cr1</option><option>C1 In Cr2</option><option>C1 In Cr3</option><option>Hopper Car1</option><option>Hopper Car2</option></optgroup>
-        </select>
-      </div>
-      <div class="fg"><label>เลขโต๊ะ</label><input type="text" id="f-table" placeholder="เช่น 5 หรือ -"/></div>
-      <div class="fg"><label>เลขพวง</label><input type="number" id="f-group" placeholder="เช่น 1" min="1"/></div>
-      <div class="fg"><label>เลขลูกกลิ้ง</label><input type="number" id="f-roller" placeholder="ถ้ามี" min="1"/></div>
-      <div class="fg"><label>ชื่อผู้เปลี่ยน</label>
-        <select id="f-tech">
-          <option value="">— เลือกช่าง —</option>
-          <option>ท้าวอุดม</option><option>ท้าวกองสี</option><option>ท้าวนก</option>
-          <option>นายจำลอง</option><option>นายนรินทร์</option><option>นายสงกรานต์</option><option>นายศราวุธ</option>
-        </select>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">สาเหตุและการแก้ไข</div>
-    <div class="form-grid two">
-      <div class="fg"><label>สาเหตุที่เสีย</label>
-        <select id="f-cause">
-          <option value="">— เลือกสาเหตุ —</option>
-          <option value="BR-D">แบริ่งแตก · BR-D</option><option value="LC">ล๊อก · LC</option>
-          <option value="LO">ยางร่อน · LO</option><option value="NI">เสียงดัง · NI</option>
-          <option value="SH">ปลอกขาด · SH</option><option value="LI-D">Link เสีย · LI-D</option>
-          <option value="BO-D">Bolt เสีย · BO-D</option><option value="BL-D">Bolt+Link เสีย · BL-D</option>
-          <option value="Shaft">เพลาสึก/เพลายาน · Shaft</option>
-        </select>
-      </div>
-      <div class="fg"><label>การแก้ไข</label>
-        <select id="f-fix">
-          <option value="">— เลือกการแก้ไข —</option>
-          <option value="BR-N">เปลี่ยนแบริ่งใหม่ · BR-N</option><option value="BR-O">เปลี่ยนแบริ่งเก่า · BR-O</option>
-          <option value="LI">เปลี่ยน Link · LI</option><option value="BO">เปลี่ยน Bolt · BO</option>
-          <option value="BL">เปลี่ยน Bolt+Link · BL</option><option value="RE">Regrease · RE</option>
-        </select>
-      </div>
-      <div class="fg full"><label>หมายเหตุ</label><input type="text" id="f-note" placeholder="รายละเอียดเพิ่มเติม เช่น Impact Inter B3"/></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="save-btn" onclick="saveRecord()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        บันทึกลง Google Sheets
-      </button>
-      <button class="btn" onclick="clearForm()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.46"/></svg>
-        ล้างฟอร์ม
-      </button>
-    </div>
-    <div class="prev-box" id="prev-box"></div>
-  </div>
-
-  <div class="card" style="border-color:rgba(139,92,246,.2)">
-    <div class="card-title" style="color:#a78bfa">คู่มือรหัส</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-      <div>
-        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">สาเหตุ</div>
-        <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
-          <div style="display:flex;gap:8px"><span class="badge b-cause">BR-D</span><span style="color:var(--text2)">แบริ่งแตก</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-cause">LC</span><span style="color:var(--text2)">ล๊อก</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-cause">LO</span><span style="color:var(--text2)">ยางร่อน</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-cause">NI</span><span style="color:var(--text2)">เสียงดัง</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-cause">SH</span><span style="color:var(--text2)">ปลอกขาด</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-cause">BL-D</span><span style="color:var(--text2)">Bolt+Link Damage</span></div>
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('entry')">📝 กรอกข้อมูล</button>
+            <button class="tab-btn" onclick="switchTab('data')">📋 ข้อมูล</button>
+            <button class="tab-btn" onclick="switchTab('summary')">📊 สรุปผล</button>
         </div>
-      </div>
-      <div>
-        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">การแก้ไข</div>
-        <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
-          <div style="display:flex;gap:8px"><span class="badge b-fix">BR-N</span><span style="color:var(--text2)">เปลี่ยนแบริ่งใหม่</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-fix">BR-O</span><span style="color:var(--text2)">เปลี่ยนแบริ่งเก่า</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-fix">LI</span><span style="color:var(--text2)">เปลี่ยน Link</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-fix">BO</span><span style="color:var(--text2)">เปลี่ยน Bolt</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-fix">BL</span><span style="color:var(--text2)">เปลี่ยน Bolt+Link</span></div>
-          <div style="display:flex;gap:8px"><span class="badge b-fix">RE</span><span style="color:var(--text2)">Regrease</span></div>
+
+        <!-- Tab 1: Data Entry -->
+        <div id="entry" class="tab-content active">
+            <div class="form-section">
+                <h2>เพิ่มบันทึกข้อมูล</h2>
+                <form id="dataForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>วันที่ <span class="required">*</span></label>
+                            <input type="text" id="date" placeholder="เช่น 1-ม.ค." required>
+                        </div>
+                        <div class="form-group">
+                            <label>ประเภท <span class="required">*</span></label>
+                            <select id="type" required>
+                                <option value="">เลือกประเภท</option>
+                                <option value="Impact">Impact</option>
+                                <option value="Carry">Carry</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>SMU <span class="required">*</span></label>
+                            <input type="text" id="smu" placeholder="เช่น 66.436" required>
+                        </div>
+                        <div class="form-group">
+                            <label>BW</label>
+                            <input type="text" id="bw" placeholder="เช่น 2400">
+                        </div>
+                        <div class="form-group">
+                            <label>พื้นที่</label>
+                            <select id="area">
+                                <option value="">เลือกพื้นที่</option>
+                                <option value="SPD">SPD</option>
+                                <option value="S1">S1</option>
+                                <option value="S2C">S2C</option>
+                                <option value="S2B">S2B</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ตารางที่</label>
+                            <input type="text" id="table" placeholder="เช่น 1">
+                        </div>
+                        <div class="form-group">
+                            <label>กลุ่ม</label>
+                            <input type="text" id="group" placeholder="เช่น 55">
+                        </div>
+                        <div class="form-group">
+                            <label>ลูกกลิ้ง</label>
+                            <input type="text" id="roller" placeholder="เช่น 8">
+                        </div>
+                        <div class="form-group">
+                            <label>เทคโนโลยี</label>
+                            <input type="text" id="tech" placeholder="เช่น ม.ค.">
+                        </div>
+                        <div class="form-group">
+                            <label>สาเหตุ</label>
+                            <input type="text" id="cause" placeholder="เช่น BR-D">
+                        </div>
+                        <div class="form-group">
+                            <label>การแก้ไข</label>
+                            <input type="text" id="fix" placeholder="เช่น RE">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">✓ บันทึกข้อมูล</button>
+                        <button type="reset" class="btn-secondary">↻ ล้างฟอร์ม</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 คำแนะนำการกรอกข้อมูล</h3>
+                <ol>
+                    <li>กรอกวันที่ในรูปแบบ เช่น <code>1-ม.ค.</code></li>
+                    <li>เลือกประเภท Impact หรือ Carry</li>
+                    <li>กรอกค่า SMU เป็นตัวเลขทศนิยม เช่น <code>66.436</code></li>
+                    <li>ฟิลด์อื่นๆ สามารถกรอกเพิ่มเติมหรือปล่อยว่างได้</li>
+                    <li>ข้อมูลจะถูกบันทึกอัตโนมัติใน Local Storage</li>
+                </ol>
+            </div>
         </div>
-      </div>
+
+        <!-- Tab 2: Data View -->
+        <div id="data" class="tab-content">
+            <div class="form-section">
+                <h2>บันทึกข้อมูลทั้งหมด</h2>
+                <div style="margin-bottom: 1rem; color: #64748b;">
+                    จำนวนทั้งหมด: <strong id="totalCount">0</strong> รายการ
+                    <button class="export-btn" onclick="exportCSV()" style="margin-left: 1rem;">⬇ ส่งออก CSV</button>
+                </div>
+                <div id="dataTableContainer"></div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Monthly Summary -->
+        <div id="summary" class="tab-content">
+            <h2 style="margin-bottom: 2rem; color: #1e293b;">📊 สรุปผลประจำเดือน</h2>
+            <div id="summaryContainer"></div>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- ===== DATA ===== -->
-<div class="page" id="page-data">
-  <div class="page-header">
-    <h1>ข้อมูลทั้งหมด</h1>
-    <p>ดึงข้อมูลจาก Google Sheets แบบเรียลไทม์ · แสดง 100 รายการต่อหน้า</p>
-  </div>
-  <div class="table-toolbar">
-    <input type="text" id="search" placeholder="🔍  ค้นหา พื้นที่ / ช่าง / หมายเหตุ..." />
-    <select id="filter-type"><option value="">ทุก Type</option><option>Impact</option><option>Carry</option><option>Return เหล็ก</option><option>Return ยาง</option><option>Flat Return</option></select>
-    <select id="filter-area"><option value="">ทุกพื้นที่</option></select>
-    <select id="filter-month"><option value="">ทุกเดือน</option></select>
-    <select id="filter-bw"><option value="">ทุก BW</option><option value="1600">BW 1600</option><option value="1800">BW 1800</option><option value="2200">BW 2200</option><option value="2400">BW 2400</option></select>
-    <button class="btn" style="padding:6px 12px;font-size:12px" onclick="applyFilter()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      ค้นหา
-    </button>
-    <span class="count-info" id="filter-count"></span>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>#</th><th>วันที่เปลี่ยน</th><th>Type</th><th>SMU</th><th>BW</th>
-        <th>พื้นที่</th><th>โต๊ะ</th><th>พวง</th><th>ลูก</th>
-        <th>สาเหตุ</th><th>แก้ไข</th><th>ช่าง</th><th>หมายเหตุ</th>
-      </tr></thead>
-      <tbody id="table-body"><tr><td colspan="13" class="empty-td">กำลังโหลด...</td></tr></tbody>
-    </table>
-    <div class="pagination" id="pagination" style="display:none"></div>
-  </div>
-</div>
+    <footer>
+        <p>Data Record System © 2026 - บันทึกข้อมูลการทำงานอย่างมีประสิทธิภาพ</p>
+    </footer>
 
-<!-- ===== REPORT ===== -->
-<div class="page" id="page-report">
-  <div class="page-header">
-    <h1>สรุปประจำเดือน</h1>
-    <p>ดึงข้อมูลจาก Google Sheets และคำนวณสดทุกครั้ง</p>
-  </div>
-  <div class="report-filter">
-    <label>เดือน</label>
-    <select id="r-month">
-      <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
-      <option value="3">มีนาคม</option><option value="4">เมษายน</option>
-      <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
-      <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
-      <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
-      <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
-    </select>
-    <label>ปี</label>
-    <select id="r-year">
-      <option value="2026">2026</option><option value="2025">2025</option>
-      <option value="2024">2024</option><option value="2023">2023</option>
-    </select>
-    <button class="btn btn-primary" style="padding:6px 14px;font-size:12px" onclick="renderReport()">ดูรายงาน</button>
-    <span style="font-size:11px;color:var(--text3);margin-left:.25rem" id="r-period-label"></span>
-  </div>
-  <div class="metrics" id="r-metrics"></div>
-  <div class="chart-grid">
-    <div class="chart-card"><div class="chart-card-title">จำนวนตามประเภท (Type)</div><div style="position:relative;height:220px"><canvas id="chart-type"></canvas></div></div>
-    <div class="chart-card"><div class="chart-card-title">สาเหตุการเสีย</div><div style="position:relative;height:220px"><canvas id="chart-cause"></canvas></div></div>
-    <div class="chart-card wide"><div class="chart-card-title">ซ่อมรายพื้นที่</div><div style="position:relative;height:220px"><canvas id="chart-area"></canvas></div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem">
-    <div class="summary-card"><table><thead><tr><th>Type</th><th class="num" style="text-align:right">จำนวน</th><th class="num" style="text-align:right">%</th></tr></thead><tbody id="type-summary-body"></tbody></table></div>
-    <div class="summary-card"><table><thead><tr><th>ช่าง</th><th class="num" style="text-align:right">รวม</th><th class="num" style="text-align:right">Impact</th><th class="num" style="text-align:right">Carry</th></tr></thead><tbody id="tech-summary-body"></tbody></table></div>
-  </div>
-  <div class="summary-card">
-    <table id="cause-fix-table">
-      <thead><tr><th>สาเหตุ</th><th>BR-N</th><th>BR-O</th><th>LI</th><th>BO</th><th>BL</th><th>RE</th><th style="text-align:right">รวม</th></tr></thead>
-      <tbody id="cause-fix-body"></tbody>
-    </table>
-  </div>
-</div>
+    <script>
+        // Data Management
+        const STORAGE_KEY = 'data_records';
+        const MONTHS_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        const MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
-<!-- ===== EXPORT ===== -->
-<div class="page" id="page-export">
-  <div class="page-header"><h1>ส่งออก / นำเข้าข้อมูล</h1><p>Export เป็น CSV หรือ Import เพิ่มข้อมูล</p></div>
-  <div class="export-grid">
-    <div class="export-card">
-      <h3>📥 ส่งออก CSV</h3>
-      <p>เลือกช่วงเดือน หรือเว้นว่างเพื่อดาวน์โหลดทั้งหมดจาก Google Sheets</p>
-      <div class="form-grid two" style="margin-bottom:.75rem">
-        <div class="fg"><label>จาก (เดือน-ปี)</label><input type="month" id="exp-from"/></div>
-        <div class="fg"><label>ถึง (เดือน-ปี)</label><input type="month" id="exp-to"/></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="exportRange()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          ดาวน์โหลด CSV
-        </button>
-        <button class="btn" onclick="exportAll()">ดาวน์โหลดทั้งหมด</button>
-      </div>
-    </div>
-    <div class="export-card">
-      <h3>📤 นำเข้า CSV</h3>
-      <p>รองรับไฟล์ CSV ที่ export จากระบบนี้ ระบบจะข้ามรายการซ้ำอัตโนมัติ</p>
-      <input type="file" accept=".csv" class="file-input" onchange="importCSV(event)"/>
-    </div>
-    <div class="export-card" style="grid-column:1/-1;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="font-size:13px;font-weight:600">สถิติข้อมูลใน Google Sheets</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:3px" id="stats-line">—</div>
-      </div>
-      <div style="font-family:var(--mono);font-size:28px;font-weight:500;color:var(--accent)" id="stats-total">—</div>
-    </div>
-    <div class="export-card danger-card">
-      <h3>⚠️ ล้างข้อมูลทั้งหมด</h3>
-      <p>ลบข้อมูลทั้งหมดออกจาก Google Sheets ไม่สามารถกู้คืนได้</p>
-      <button class="btn" style="border-color:rgba(239,68,68,.4);color:#f87171" onclick="clearAll()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg>
-        ลบข้อมูลทั้งหมด
-      </button>
-    </div>
-    <div class="export-card">
-      <h3>🔗 เปลี่ยน Script URL</h3>
-      <p>หากต้องการเชื่อมกับ Google Sheets อื่น</p>
-      <div class="fg" style="margin-bottom:.75rem"><input type="text" id="url-change-input" placeholder="https://script.google.com/macros/s/..."/></div>
-      <button class="btn" onclick="changeUrl()">บันทึก URL ใหม่</button>
-    </div>
-  </div>
-</div>
+        // Load data from localStorage
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
 
-</main>
+        // Save data to localStorage
+        function saveData(records) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        }
 
-<!-- HELP MODAL -->
-<div id="help-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;overflow:auto;padding:2rem">
-  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;max-width:600px;margin:0 auto;padding:2rem">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-      <h2 style="font-size:16px;font-weight:600">วิธีตั้งค่า Google Apps Script</h2>
-      <button class="btn" style="padding:4px 10px" onclick="closeHelp()">✕</button>
-    </div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.8;display:flex;flex-direction:column;gap:1rem">
-      <div style="background:var(--bg3);border-radius:8px;padding:1rem">
-        <div style="font-weight:600;color:var(--text);margin-bottom:.5rem">ขั้นตอนที่ 1 — เปิด Google Sheets</div>
-        สร้าง Google Sheets ใหม่ หรือใช้ไฟล์ที่มีอยู่แล้วก็ได้
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:1rem">
-        <div style="font-weight:600;color:var(--text);margin-bottom:.5rem">ขั้นตอนที่ 2 — เปิด Apps Script</div>
-        ที่เมนูบน: <strong style="color:var(--text)">Extensions → Apps Script</strong>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:1rem">
-        <div style="font-weight:600;color:var(--text);margin-bottom:.5rem">ขั้นตอนที่ 3 — วาง Code.gs</div>
-        ลบโค้ดเดิมออกทั้งหมด แล้ววางโค้ดจากไฟล์ <code style="background:var(--bg4);padding:2px 6px;border-radius:4px;color:var(--accent)">Code.gs</code> ที่ดาวน์โหลดมา
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:1rem">
-        <div style="font-weight:600;color:var(--text);margin-bottom:.5rem">ขั้นตอนที่ 4 — Deploy</div>
-        คลิก <strong style="color:var(--text)">Deploy → New deployment</strong><br/>
-        · Type: <strong style="color:var(--text)">Web app</strong><br/>
-        · Execute as: <strong style="color:var(--text)">Me</strong><br/>
-        · Who has access: <strong style="color:var(--text)">Anyone</strong> (หรือ Anyone with Google account ถ้าต้องการปลอดภัยขึ้น)<br/>
-        คลิก Deploy → อนุญาต permission → คัดลอก <strong style="color:#4ade80">Web app URL</strong>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:1rem">
-        <div style="font-weight:600;color:var(--text);margin-bottom:.5rem">ขั้นตอนที่ 5 — วาง URL</div>
-        นำ URL ที่ได้มาวางในช่องด้านบนแล้วกด บันทึก
-      </div>
-      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:1rem;font-size:12px">
-        💡 <strong style="color:#fbbf24">ทำครั้งเดียว</strong> — ทีมทุกคนใช้ URL เดียวกัน เปิดไฟล์ HTML บนเครื่องตัวเองได้เลย ข้อมูลเก็บที่ Sheets กลาง
-      </div>
-    </div>
-  </div>
-</div>
+        // Set default date
+        function setDefaultDate() {
+            const today = new Date();
+            const day = today.getDate();
+            const month = MONTHS_TH[today.getMonth()];
+            document.getElementById('date').value = `${day}-${month}`;
+        }
 
-<div class="toast" id="toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
+        // Add record
+        document.getElementById('dataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-const URL_KEY = 'roller_script_url_v1';
-let SCRIPT_URL = localStorage.getItem(URL_KEY) || '';
-let charts = {};
-let currentPage = 1;
-let currentFilters = {};
-let metaCache = null;
+            const record = {
+                id: Date.now().toString(),
+                date: document.getElementById('date').value,
+                type: document.getElementById('type').value,
+                smu: document.getElementById('smu').value,
+                bw: document.getElementById('bw').value,
+                area: document.getElementById('area').value,
+                table: document.getElementById('table').value,
+                group: document.getElementById('group').value,
+                roller: document.getElementById('roller').value,
+                tech: document.getElementById('tech').value,
+                cause: document.getElementById('cause').value,
+                fix: document.getElementById('fix').value,
+            };
 
-const MONTH_TH = ['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-const TYPE_COLORS = {'Impact':'#3d8ef0','Carry':'#2ecc71','Return เหล็ก':'#f59e0b','Return ยาง':'#e67e22','Flat Return':'#8b5cf6','default':'#64748b'};
-const CAUSE_COLORS = {'BR-D':'#ef4444','LC':'#f59e0b','LO':'#e67e22','NI':'#8b5cf6','SH':'#ec4899','LI-D':'#3d8ef0','BO-D':'#2ecc71','BL-D':'#06b6d4','Shaft':'#64748b'};
+            const records = loadData();
+            records.push(record);
+            saveData(records);
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-document.getElementById('r-month').value = new Date().getMonth() + 1;
-document.getElementById('r-year').value = new Date().getFullYear();
+            alert('✓ บันทึกข้อมูลสำเร็จ');
+            this.reset();
+            setDefaultDate();
+            renderDataTable();
+            renderSummary();
+        });
 
-if (SCRIPT_URL) {
-  document.getElementById('setup-banner').classList.add('hidden');
-  document.getElementById('url-change-input').value = SCRIPT_URL;
-  init();
-} else {
-  setDot('wait');
-}
+        // Render data table
+        function renderDataTable() {
+            const records = loadData();
+            const container = document.getElementById('dataTableContainer');
 
-async function init() {
-  await loadMeta();
-}
+            if (records.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>ยังไม่มีข้อมูลบันทึก</p></div>';
+                document.getElementById('totalCount').textContent = '0';
+                return;
+            }
 
-// ─── API HELPERS ──────────────────────────────────────────────────────────────
-function setDot(state) {
-  const d = document.getElementById('conn-dot');
-  d.className = 'status-dot ' + state;
-  d.title = state==='ok'?'เชื่อมต่อแล้ว':state==='err'?'เชื่อมต่อไม่ได้':'กำลังเชื่อมต่อ...';
-}
+            document.getElementById('totalCount').textContent = records.length;
 
-function showLoad() { document.getElementById('loading').classList.remove('hidden'); }
-function hideLoad() { document.getElementById('loading').classList.add('hidden'); }
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>วันที่</th>
+                            <th>ประเภท</th>
+                            <th>SMU</th>
+                            <th>BW</th>
+                            <th>พื้นที่</th>
+                            <th>ลูกกลิ้ง</th>
+                            <th>สาเหตุ</th>
+                            <th>แก้ไข</th>
+                            <th>ลบ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
 
-async function apiGet(params) {
-  if (!SCRIPT_URL) { toast('ยังไม่ได้ตั้งค่า Script URL', false); return null; }
-  const url = SCRIPT_URL + '?' + new URLSearchParams(params).toString();
-  const res = await fetch(url);
-  const json = await res.json();
-  if (!json.ok) throw new Error(json.error || 'API Error');
-  return json.data;
-}
+            records.forEach((record, index) => {
+                const badge = record.type === 'Impact' 
+                    ? `<span class="badge badge-impact">${record.type}</span>`
+                    : `<span class="badge badge-carry">${record.type}</span>`;
 
-async function apiPost(body) {
-  if (!SCRIPT_URL) { toast('ยังไม่ได้ตั้งค่า Script URL', false); return null; }
-  const res = await fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify(body)
-  });
-  const json = await res.json();
-  if (!json.ok) throw new Error(json.error || 'API Error');
-  return json.data;
-}
+                html += `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>${badge}</td>
+                        <td>${record.smu}</td>
+                        <td>${record.bw || '-'}</td>
+                        <td>${record.area || '-'}</td>
+                        <td>${record.roller || '-'}</td>
+                        <td>${record.cause || '-'}</td>
+                        <td>${record.fix || '-'}</td>
+                        <td><button class="btn-danger" onclick="deleteRecord('${record.id}')">ลบ</button></td>
+                    </tr>
+                `;
+            });
 
-// ─── META ─────────────────────────────────────────────────────────────────────
-async function loadMeta() {
-  try {
-    setDot('wait');
-    const data = await apiGet({ action: 'getMeta' });
-    metaCache = data;
-    document.getElementById('total-count').textContent = data.total.toLocaleString();
-    setDot('ok');
-    // populate filter dropdowns
-    const fa = document.getElementById('filter-area');
-    fa.innerHTML = '<option value="">ทุกพื้นที่</option>' + data.areas.map(a=>`<option>${a}</option>`).join('');
-    const fm = document.getElementById('filter-month');
-    fm.innerHTML = '<option value="">ทุกเดือน</option>' + data.months.map(m=>`<option value="${m}">${m}</option>`).join('');
-    // stats
-    document.getElementById('stats-total').textContent = data.total.toLocaleString();
-    document.getElementById('stats-line').textContent =
-      `${data.areas.length} พื้นที่ · ${data.months.length} เดือน · บันทึกล่าสุด ${data.last||'-'}`;
-  } catch(e) {
-    setDot('err');
-    toast('เชื่อมต่อ Google Sheets ไม่ได้: ' + e.message, false);
-  }
-}
+            html += `
+                    </tbody>
+                </table>
+            `;
 
-// ─── PAGE NAV ─────────────────────────────────────────────────────────────────
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  document.getElementById('nav-'+name).classList.add('active');
-  if (name==='data') { currentPage=1; currentFilters={}; fetchPage(); }
-  if (name==='report') renderReport();
-  if (name==='export') loadMeta();
-}
+            container.innerHTML = html;
+        }
 
-// ─── FORM ─────────────────────────────────────────────────────────────────────
-async function saveRecord() {
-  const date = document.getElementById('f-date').value;
-  const type = document.getElementById('f-type').value;
-  const area = document.getElementById('f-area').value;
-  if (!date || !type || !area) { toast('กรุณากรอก วันที่, Type และพื้นที่', false); return; }
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.textContent = 'กำลังบันทึก...';
-  try {
-    const smuV = document.getElementById('f-smu').value;
-    const bwV = document.getElementById('f-bw').value;
-    const gV = document.getElementById('f-group').value;
-    const rV = document.getElementById('f-roller').value;
-    const rec = {
-      date, type, area,
-      smu: smuV ? Number(smuV) : null,
-      bw: bwV ? Number(bwV) : null,
-      table: document.getElementById('f-table').value || '-',
-      group: gV ? Number(gV) : null,
-      roller: rV ? Number(rV) : null,
-      tech: document.getElementById('f-tech').value,
-      cause: document.getElementById('f-cause').value,
-      fix: document.getElementById('f-fix').value,
-      note: document.getElementById('f-note').value,
-      recordDate: new Date().toISOString().split('T')[0]
-    };
-    const res = await apiPost({ action:'insert', record: rec });
-    rec.id = res.id;
-    const box = document.getElementById('prev-box');
-    box.style.display = 'block';
-    box.innerHTML = `<strong>#${rec.id}</strong> &nbsp;·&nbsp; ${rec.date} &nbsp;·&nbsp; <strong>${rec.type}</strong> &nbsp;·&nbsp; ${rec.area} พวง ${rec.group??'-'} ลูก ${rec.roller??'-'} &nbsp;·&nbsp; สาเหตุ <strong>${rec.cause||'-'}</strong> → แก้ไข <strong>${rec.fix||'-'}</strong>`;
-    clearForm();
-    toast('✓ บันทึกสำเร็จ รายการ #' + rec.id);
-    loadMeta();
-  } catch(e) {
-    toast('บันทึกไม่สำเร็จ: ' + e.message, false);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกลง Google Sheets`;
-  }
-}
+        // Delete record
+        function deleteRecord(id) {
+            if (confirm('ต้องการลบข้อมูลนี้ใช่ไหม?')) {
+                let records = loadData();
+                records = records.filter(r => r.id !== id);
+                saveData(records);
+                renderDataTable();
+                renderSummary();
+            }
+        }
 
-function clearForm() {
-  ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note']
-    .forEach(id => document.getElementById(id).value='');
-  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-}
+        // Render summary
+        function renderSummary() {
+            const records = loadData();
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1;
+            const currentYear = today.getFullYear();
 
-// ─── TABLE ────────────────────────────────────────────────────────────────────
-function applyFilter() {
-  currentPage = 1;
-  currentFilters = {
-    q: document.getElementById('search').value,
-    type: document.getElementById('filter-type').value,
-    area: document.getElementById('filter-area').value,
-    month: document.getElementById('filter-month').value,
-    bw: document.getElementById('filter-bw').value,
-  };
-  fetchPage();
-}
+            // Filter by month
+            const monthlyRecords = records.filter(r => {
+                const parts = r.date.split('-');
+                const monthStr = parts[1];
+                const monthMap = {
+                    'ม.ค.': 1, 'ก.พ.': 2, 'มี.ค.': 3, 'เม.ย.': 4, 'พ.ค.': 5, 'มิ.ย.': 6,
+                    'ก.ค.': 7, 'ส.ค.': 8, 'ก.ย.': 9, 'ต.ค.': 10, 'พ.ย.': 11, 'ธ.ค.': 12
+                };
+                return monthMap[monthStr] === currentMonth;
+            });
 
-// Allow Enter key to search
-document.getElementById('search').addEventListener('keydown', e => { if(e.key==='Enter') applyFilter(); });
+            const totalRecords = monthlyRecords.length;
+            const impactCount = monthlyRecords.filter(r => r.type === 'Impact').length;
+            const carryCount = monthlyRecords.filter(r => r.type === 'Carry').length;
 
-async function fetchPage() {
-  showLoad();
-  try {
-    const params = { action:'getPage', page: currentPage, limit:100, ...currentFilters };
-    const data = await apiGet(params);
-    renderTableRows(data.items);
-    document.getElementById('filter-count').textContent = `${data.total.toLocaleString()} รายการ`;
-    renderPagination(data.page, data.totalPages, data.total);
-  } catch(e) {
-    document.getElementById('table-body').innerHTML = `<tr><td colspan="13" class="empty-td" style="color:var(--red)">โหลดไม่ได้: ${e.message}</td></tr>`;
-    document.getElementById('pagination').style.display='none';
-  } finally {
-    hideLoad();
-  }
-}
+            // Area breakdown
+            const areaMap = {};
+            monthlyRecords.forEach(r => {
+                if (r.area) {
+                    areaMap[r.area] = (areaMap[r.area] || 0) + 1;
+                }
+            });
 
-function typeBadge(t) {
-  const cls = t==='Impact'?'b-impact':t==='Carry'?'b-carry':(t||'').startsWith('Return')?'b-return':(t||'').startsWith('Flat')?'b-flat':'b-other';
-  return `<span class="badge ${cls}">${t}</span>`;
-}
+            // Cause breakdown
+            const causeMap = {};
+            monthlyRecords.forEach(r => {
+                if (r.cause) {
+                    causeMap[r.cause] = (causeMap[r.cause] || 0) + 1;
+                }
+            });
 
-function renderTableRows(rows) {
-  const body = document.getElementById('table-body');
-  if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="13" class="empty-td">ไม่มีข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
-    return;
-  }
-  body.innerHTML = rows.map(r=>`<tr>
-    <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${r.id}</td>
-    <td style="font-family:var(--mono);font-size:12px;white-space:nowrap">${r.date||''}</td>
-    <td>${typeBadge(r.type)}</td>
-    <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${r.smu??''}</td>
-    <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${r.bw?'BW'+r.bw:''}</td>
-    <td style="font-weight:500">${r.area||''}</td>
-    <td style="color:var(--text3)">${r.table||''}</td>
-    <td style="color:var(--text2)">${r.group??''}</td>
-    <td style="color:var(--text2)">${r.roller??''}</td>
-    <td>${r.cause?`<span class="badge b-cause">${r.cause}</span>`:''}</td>
-    <td>${r.fix?`<span class="badge b-fix">${r.fix}</span>`:''}</td>
-    <td style="white-space:nowrap;font-size:12px;color:var(--text2)">${r.tech||''}</td>
-    <td style="font-size:11px;color:var(--text3);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.note||''}</td>
-  </tr>`).join('');
-}
+            const container = document.getElementById('summaryContainer');
 
-function renderPagination(page, totalPages, total) {
-  const pg = document.getElementById('pagination');
-  if (totalPages <= 1) { pg.style.display='none'; return; }
-  pg.style.display = 'flex';
-  let html = `<button class="pg-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>‹ ก่อนหน้า</button>`;
-  // show limited page numbers
-  let start = Math.max(1, page-3), end = Math.min(totalPages, page+3);
-  if (start>1) html += `<button class="pg-btn" onclick="goPage(1)">1</button>${start>2?'<span class="pg-info">…</span>':''}`;
-  for (let i=start;i<=end;i++) html += `<button class="pg-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  if (end<totalPages) html += `${end<totalPages-1?'<span class="pg-info">…</span>':''}<button class="pg-btn" onclick="goPage(${totalPages})">${totalPages}</button>`;
-  html += `<button class="pg-btn" onclick="goPage(${page+1})" ${page===totalPages?'disabled':''}>ถัดไป ›</button>`;
-  html += `<span class="pg-info">หน้า ${page}/${totalPages} · ${total.toLocaleString()} รายการ</span>`;
-  pg.innerHTML = html;
-}
+            if (totalRecords === 0) {
+                container.innerHTML = '<div class="empty-state"><p>ไม่มีข้อมูลสำหรับเดือนนี้</p></div>';
+                return;
+            }
 
-function goPage(p) { currentPage=p; fetchPage(); window.scrollTo(0,120); }
+            let html = `
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h3>รวมทั้งหมด</h3>
+                        <div class="value">${totalRecords}</div>
+                        <div class="percentage">รายการ</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Impact</h3>
+                        <div class="value">${impactCount}</div>
+                        <div class="percentage">${totalRecords > 0 ? Math.round((impactCount / totalRecords) * 100) : 0}%</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Carry</h3>
+                        <div class="value">${carryCount}</div>
+                        <div class="percentage">${totalRecords > 0 ? Math.round((carryCount / totalRecords) * 100) : 0}%</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>พื้นที่</h3>
+                        <div class="value">${Object.keys(areaMap).length}</div>
+                        <div class="percentage">ประเภท</div>
+                    </div>
+                </div>
+            `;
 
-// ─── REPORT ───────────────────────────────────────────────────────────────────
-async function renderReport() {
-  const month = parseInt(document.getElementById('r-month').value);
-  const year  = parseInt(document.getElementById('r-year').value);
-  const prefix = `${year}-${String(month).padStart(2,'0')}`;
-  document.getElementById('r-period-label').textContent = `· ${MONTH_TH[month]} ${year}`;
-  showLoad();
-  try {
-    const d = await apiGet({ action:'getReport', month: prefix });
-    const total=d.total, brDmg=d.brDmg;
-    const impact=d.typeCnt['Impact']||0, carry=d.typeCnt['Carry']||0;
-    document.getElementById('r-metrics').innerHTML = `
-      <div class="metric" style="--mcolor:${total?'#3d8ef0':'#4a5268'}">
-        <div class="metric-label">รวมทั้งหมด</div>
-        <div class="metric-value" style="color:${total?'#60a5fa':'var(--text3)'}">${total}</div>
-        <div class="metric-sub">รายการซ่อม</div>
-      </div>
-      <div class="metric" style="--mcolor:#3d8ef0">
-        <div class="metric-label">Impact</div>
-        <div class="metric-value" style="color:#60a5fa">${impact}</div>
-        <div class="metric-sub">${total?Math.round(impact/total*100):0}% ของทั้งหมด</div>
-      </div>
-      <div class="metric" style="--mcolor:#2ecc71">
-        <div class="metric-label">Carry</div>
-        <div class="metric-value" style="color:#4ade80">${carry}</div>
-        <div class="metric-sub">${total?Math.round(carry/total*100):0}% ของทั้งหมด</div>
-      </div>
-      <div class="metric" style="--mcolor:#ef4444">
-        <div class="metric-label">แบริ่งแตก (BR-D)</div>
-        <div class="metric-value" style="color:#f87171">${brDmg}</div>
-        <div class="metric-sub">${total?Math.round(brDmg/total*100):0}% ของทั้งหมด</div>
-      </div>`;
-    const tLabels=Object.keys(d.typeCnt), cLabels=Object.keys(d.causeCnt), aLabels=Object.keys(d.areaCnt).sort((a,b)=>d.areaCnt[b]-d.areaCnt[a]);
-    redrawChart('typeChart','chart-type','doughnut',tLabels,tLabels.map(k=>d.typeCnt[k]),tLabels.map(k=>TYPE_COLORS[k]||TYPE_COLORS.default),{plugins:{legend:{position:'right',labels:{color:'#8891aa',font:{size:11},boxWidth:12,padding:8}}}});
-    redrawChart('causeChart','chart-cause','bar',cLabels,cLabels.map(k=>d.causeCnt[k]),cLabels.map(k=>CAUSE_COLORS[k]||'#64748b'),{plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#4a5268',stepSize:1},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},x:{ticks:{color:'#8891aa',font:{size:11}},grid:{display:false},border:{display:false}}}});
-    redrawChart('areaChart','chart-area','bar',aLabels,aLabels.map(k=>d.areaCnt[k]),'#3d8ef0',{plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#4a5268',stepSize:1},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},x:{ticks:{color:'#8891aa',font:{size:11},autoSkip:false,maxRotation:45},grid:{display:false},border:{display:false}}}});
-    document.getElementById('type-summary-body').innerHTML = tLabels.length
-      ? tLabels.sort((a,b)=>d.typeCnt[b]-d.typeCnt[a]).map(k=>`<tr><td>${typeBadge(k)}</td><td class="num">${d.typeCnt[k]}</td><td class="num" style="color:var(--text3)">${total?Math.round(d.typeCnt[k]/total*100):0}%</td></tr>`).join('')
-      : '<tr><td colspan="3" class="empty-td">ไม่มีข้อมูล</td></tr>';
-    document.getElementById('tech-summary-body').innerHTML = Object.keys(d.techMap).length
-      ? Object.entries(d.techMap).map(([t,v])=>`<tr><td style="color:var(--text)">${t}</td><td class="num">${v.total}</td><td class="num" style="color:#60a5fa">${v.impact}</td><td class="num" style="color:#4ade80">${v.carry}</td></tr>`).join('')
-      : '<tr><td colspan="4" class="empty-td">ไม่มีข้อมูล</td></tr>';
-    const causes=['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'], fixes=['BR-N','BR-O','LI','BO','BL','RE'];
-    document.getElementById('cause-fix-body').innerHTML = causes.filter(c=>d.matrix[c]).map(c=>{
-      const row=d.matrix[c], rowTotal=Object.values(row).reduce((a,b)=>a+b,0);
-      return `<tr><td><span class="badge b-cause">${c}</span></td>${fixes.map(f=>`<td style="text-align:center;font-family:var(--mono);font-size:12px;color:${row[f]?'var(--text)':'var(--text3)'}">${row[f]||'—'}</td>`).join('')}<td class="num">${rowTotal}</td></tr>`;
-    }).join('') || '<tr><td colspan="8" class="empty-td">ไม่มีข้อมูล</td></tr>';
-  } catch(e) {
-    toast('โหลดรายงานไม่ได้: ' + e.message, false);
-  } finally {
-    hideLoad();
-  }
-}
+            // Type chart
+            if (impactCount > 0 || carryCount > 0) {
+                const maxType = Math.max(impactCount, carryCount);
+                html += `
+                    <div class="chart-container">
+                        <h3>การกระจายตามประเภท</h3>
+                        <div class="chart">
+                            <div class="bar">
+                                <div class="bar-fill" style="height: ${(impactCount / maxType) * 100}%;">
+                                    <div class="bar-value">${impactCount}</div>
+                                </div>
+                                <div class="bar-label">Impact</div>
+                            </div>
+                            <div class="bar">
+                                <div class="bar-fill" style="height: ${(carryCount / maxType) * 100}%;">
+                                    <div class="bar-value">${carryCount}</div>
+                                </div>
+                                <div class="bar-label">Carry</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
-function redrawChart(key, id, type, labels, data, colors, extraOpts) {
-  if (charts[key]) { charts[key].destroy(); delete charts[key]; }
-  const ctx = document.getElementById(id);
-  if (!ctx) return;
-  charts[key] = new Chart(ctx, {
-    type,
-    data: { labels, datasets:[{ data, backgroundColor: Array.isArray(colors)?colors:data.map(()=>colors), borderWidth:0, borderRadius:type==='bar'?3:0 }] },
-    options: { responsive:true, maintainAspectRatio:false, animation:{duration:400}, ...extraOpts }
-  });
-}
+            // Area chart
+            if (Object.keys(areaMap).length > 0) {
+                const areas = Object.entries(areaMap).sort((a, b) => b[1] - a[1]);
+                const maxArea = Math.max(...areas.map(a => a[1]));
+                html += `
+                    <div class="chart-container">
+                        <h3>การกระจายตามพื้นที่</h3>
+                        <div class="chart">
+                `;
+                areas.forEach(([area, count]) => {
+                    html += `
+                        <div class="bar">
+                            <div class="bar-fill" style="height: ${(count / maxArea) * 100}%;">
+                                <div class="bar-value">${count}</div>
+                            </div>
+                            <div class="bar-label">${area}</div>
+                        </div>
+                    `;
+                });
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
 
-// ─── EXPORT / IMPORT ──────────────────────────────────────────────────────────
-const CSV_HEADERS = ['id','date','type','smu','bw','area','table','group','roller','tech','cause','fix','note','recordDate'];
-function toCSV(data) {
-  const esc = v => (v==null?'':String(v).includes(',')?`"${v}"`:String(v));
-  return [CSV_HEADERS.join(','), ...data.map(r=>CSV_HEADERS.map(h=>esc(r[h])).join(','))].join('\n');
-}
-function downloadCSV(data, name) {
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(toCSV(data));
-  a.download=name; a.click();
-  toast('ดาวน์โหลด ' + name);
-}
+            // Top causes
+            if (Object.keys(causeMap).length > 0) {
+                const causes = Object.entries(causeMap)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5);
+                const maxCause = Math.max(...causes.map(c => c[1]));
+                html += `
+                    <div class="chart-container">
+                        <h3>สาเหตุหลัก (Top 5)</h3>
+                        <div class="chart">
+                `;
+                causes.forEach(([cause, count]) => {
+                    html += `
+                        <div class="bar">
+                            <div class="bar-fill" style="height: ${(count / maxCause) * 100}%;">
+                                <div class="bar-value">${count}</div>
+                            </div>
+                            <div class="bar-label">${cause}</div>
+                        </div>
+                    `;
+                });
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
 
-async function exportRange() {
-  const from = document.getElementById('exp-from').value;
-  const to   = document.getElementById('exp-to').value;
-  showLoad();
-  try {
-    let data = await apiGet({ action:'getAll' });
-    if (from) data = data.filter(r=>(r.date||'')>=from+'-01');
-    if (to)   data = data.filter(r=>(r.date||'')<=to+'-31');
-    downloadCSV(data, from&&to?`roller_${from}_${to}.csv`:'roller_export.csv');
-  } catch(e) { toast('Export ไม่สำเร็จ: '+e.message, false); }
-  finally { hideLoad(); }
-}
+            container.innerHTML = html;
+        }
 
-async function exportAll() {
-  showLoad();
-  try {
-    const data = await apiGet({ action:'getAll' });
-    downloadCSV(data, 'roller_all.csv');
-  } catch(e) { toast('Export ไม่สำเร็จ: '+e.message, false); }
-  finally { hideLoad(); }
-}
+        // Export to CSV
+        function exportCSV() {
+            const records = loadData();
+            if (records.length === 0) {
+                alert('ไม่มีข้อมูลให้ส่งออก');
+                return;
+            }
 
-async function importCSV(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async ev => {
-    const lines = ev.target.result.split('\n').filter(l=>l.trim());
-    const headers = lines[0].split(',').map(h=>h.trim());
-    const records = [];
-    for (let i=1;i<lines.length;i++) {
-      const vals = lines[i].split(',');
-      const obj = {};
-      headers.forEach((h,idx)=>{ obj[h]=(vals[idx]||'').replace(/^"|"$/g,'').trim()||null; });
-      obj.smu  = obj.smu  ? Number(obj.smu)  : null;
-      obj.bw   = obj.bw   ? Number(obj.bw)   : null;
-      obj.group= obj.group? Number(obj.group) : null;
-      obj.roller=obj.roller?Number(obj.roller): null;
-      records.push(obj);
-    }
-    showLoad();
-    try {
-      const res = await apiPost({ action:'importBulk', records });
-      toast(`นำเข้าสำเร็จ เพิ่ม ${res.added} รายการ`);
-      loadMeta();
-    } catch(e) { toast('Import ไม่สำเร็จ: '+e.message, false); }
-    finally { hideLoad(); }
-  };
-  reader.readAsText(file,'UTF-8');
-}
+            const headers = ['ID', 'วันที่', 'ประเภท', 'SMU', 'BW', 'พื้นที่', 'ตารางที่', 'กลุ่ม', 'ลูกกลิ้ง', 'เทคโนโลยี', 'สาเหตุ', 'แก้ไข'];
+            let csv = headers.join(',') + '\n';
 
-async function clearAll() {
-  if (!confirm('ยืนยันการลบข้อมูลทั้งหมดใน Google Sheets?\n\nแนะนำให้ Export ก่อนลบ')) return;
-  showLoad();
-  try {
-    await apiPost({ action:'deleteAll' });
-    toast('ลบข้อมูลทั้งหมดแล้ว', false);
-    loadMeta();
-  } catch(e) { toast('ลบไม่สำเร็จ: '+e.message, false); }
-  finally { hideLoad(); }
-}
+            records.forEach(r => {
+                csv += [r.id, r.date, r.type, r.smu, r.bw, r.area, r.table, r.group, r.roller, r.tech, r.cause, r.fix]
+                    .map(cell => `"${cell || ''}"`)
+                    .join(',') + '\n';
+            });
 
-// ─── URL SETUP ────────────────────────────────────────────────────────────────
-function saveScriptUrl() {
-  const url = document.getElementById('script-url-input').value.trim();
-  if (!url.startsWith('https://script.google.com')) { toast('URL ไม่ถูกต้อง', false); return; }
-  SCRIPT_URL = url;
-  localStorage.setItem(URL_KEY, url);
-  document.getElementById('setup-banner').classList.add('hidden');
-  document.getElementById('url-change-input').value = url;
-  toast('บันทึก URL แล้ว กำลังเชื่อมต่อ...');
-  init();
-}
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `data_records_${new Date().toISOString().split('T')[0]}.csv`);
+            link.click();
+        }
 
-function changeUrl() {
-  const url = document.getElementById('url-change-input').value.trim();
-  if (!url.startsWith('https://script.google.com')) { toast('URL ไม่ถูกต้อง', false); return; }
-  SCRIPT_URL = url;
-  localStorage.setItem(URL_KEY, url);
-  toast('เปลี่ยน URL แล้ว กำลังเชื่อมต่อใหม่...');
-  init();
-}
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
 
-function showHelp()  { document.getElementById('help-modal').style.display='block'; }
-function closeHelp() { document.getElementById('help-modal').style.display='none'; }
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
 
-// ─── TOAST ────────────────────────────────────────────────────────────────────
-function toast(msg, ok=true) {
-  const t=document.getElementById('toast');
-  document.getElementById('toast-dot').style.background = ok?'#2ecc71':'#ef4444';
-  document.getElementById('toast-msg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3200);
-}
-</script>
+            // Render data if needed
+            if (tabName === 'data') {
+                renderDataTable();
+            } else if (tabName === 'summary') {
+                renderSummary();
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            setDefaultDate();
+            renderDataTable();
+            renderSummary();
+        });
+    </script>
 </body>
 </html>
