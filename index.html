@@ -218,11 +218,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="card-title">ข้อมูลทั่วไป</div>
     <div class="form-grid">
       <div class="fg">
-        <label>วันที่เปลี่ยน *</label>
+        <label>Date Change *</label>
         <input type="date" id="f-date"/>
       </div>
       <div class="fg">
-        <label>ตัวเลข SMU</label>
+        <label>SMU Equipment</label>
         <input type="number" id="f-smu" placeholder="เช่น 53661"/>
       </div>
       <div class="fg">
@@ -236,7 +236,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div class="fg">
-        <label>Type ลูกกลิ้ง *</label>
+        <label>Type Roller *</label>
         <select id="f-type">
           <option value="">— เลือก Type —</option>
           <option>Impact</option><option>Carry</option>
@@ -246,7 +246,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div class="fg">
-        <label>พื้นที่ (ไลน์) *</label>
+        <label>Location *</label>
         <select id="f-area">
           <option value="">— เลือกพื้นที่ —</option>
           <optgroup label="Line S"><option>S1</option><option>S2A</option><option>S2B</option><option>S2C</option><option>S2</option><option>S3</option><option>S4</option><option>S5</option></optgroup>
@@ -256,23 +256,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div class="fg">
-        <label>เลขโต๊ะ</label>
+        <label>Table No.</label>
         <input type="text" id="f-table" placeholder="เช่น 5 หรือ -"/>
       </div>
       <div class="fg">
-        <label>เลขพวง</label>
+        <label>Garland No.</label>
         <input type="number" id="f-group" placeholder="เช่น 1" min="1"/>
       </div>
       <div class="fg">
-        <label>เลขลูกกลิ้ง</label>
+        <label>Roller No.</label>
         <input type="number" id="f-roller" placeholder="ถ้ามี" min="1"/>
       </div>
       <div class="fg">
         <label>ชื่อผู้เปลี่ยน</label>
         <select id="f-tech">
-          <option value="">— เลือกช่าง —</option>
+          <option value="">— เลือกชื่อผู้เปลี่ยน —</option>
           <option>ท้าวอุดม</option><option>ท้าวกองสี</option><option>ท้าวนก</option>
+          <option>ท้าวฮวง</option><option>ท้าวสุลิน</option><option>ท้าวปิม</option><option>ท้าวสักน้อย</option>
           <option>นายจำลอง</option><option>นายนรินทร์</option><option>นายสงกรานต์</option><option>นายศราวุธ</option>
+          <option>นายสมชาย</option><option>นายชาญประสิทธิ์</option><option>นายพีรวิชญ์</option><option>นายเพชร</option>
         </select>
       </div>
     </div>
