@@ -156,7 +156,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .prev-box strong{color:#4ade80}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text);opacity:0;transform:translateY(8px);transition:all .25s;z-index:9999;display:flex;align-items:center;gap:8px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text);opacity:0;transform:translateY(8px);transition:all .25s;z-index:1000;pointer-events:none;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .toast.show{opacity:1;transform:none}
 .toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 
@@ -396,9 +396,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="table-wrap">
     <table>
       <thead><tr>
-        <th>#</th><th>วันที่</th><th>Type</th><th>SMU</th><th>BW</th>
-        <th>พื้นที่</th><th>โต๊ะ</th><th>พวง</th><th>ลูก</th>
-        <th>สาเหตุ</th><th>แก้ไข</th><th>ช่าง</th><th>หมายเหตุ</th><th></th>
+        <th>#</th><th>วันที่</th><th>ประเภท</th><th>SMU</th><th>BW</th><th>พื้นที่</th><th>โต๊ะ</th><th>พวง</th><th>ลูก</th><th>สาเหตุ</th><th>แก้ไข</th><th>ช่าง</th><th>หมายเหตุ</th><th></th>
       </tr></thead>
       <tbody id="table-body"><tr><td colspan="14" class="empty-td">กำลังโหลด...</td></tr></tbody>
     </table>
@@ -482,8 +480,6 @@ const LOCAL_KEY  = 'roller_local_v2';
 const CSV_URL    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
 let SCRIPT_URL = localStorage.getItem(SCRIPT_KEY) || '';
-const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
-const LOCAL_KEY = 'roller_local_v2';
 
 const MONTHS_TH = ['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const MONTH_SHORT = {'ม.ค.':1,'ก.พ.':2,'มี.ค.':3,'เม.ย.':4,'พ.ค.':5,'มิ.ย.':6,'ก.ค.':7,'ส.ค.':8,'ก.ย.':9,'ต.ค.':10,'พ.ย.':11,'ธ.ค.':12};
@@ -731,7 +727,10 @@ function resetBtn() {
 
 function clearForm() {
   ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note']
-    .forEach(id => document.getElementById(id).value = '');
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 }
 
@@ -767,9 +766,9 @@ function renderTable() {
     <td style="white-space:nowrap;font-family:var(--mono);font-size:12px">${r.date||''}</td>
     <td>${typeBadge(r.type)}</td>
     <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${r.smu||''}</td>
-    <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${r.bw?'BW'+r.bw:''}</td>
+    <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${r.bw||''}</td>
     <td style="font-weight:500">${r.area||''}</td>
-    <td style="color:var(--text3)">${r.table||''}</td>
+    <td style="color:var(--text2)">${r.table||''}</td>
     <td style="color:var(--text2)">${r.group||''}</td>
     <td style="color:var(--text2)">${r.roller||''}</td>
     <td>${r.cause?`<span class="badge b-cause">${r.cause}</span>`:''}</td>
@@ -783,7 +782,7 @@ function renderTable() {
 function deleteLocal(lid) {
   if (!confirm('ลบรายการ Local นี้?')) return;
   localData = localData.filter(r => r._lid !== lid);
-  saveLocal();
+  persistLocal();
   mergeData();
   renderTable();
   toast('ลบแล้ว');
