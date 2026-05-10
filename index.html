@@ -1,1040 +1,829 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Record System</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
-            padding: 2rem;
-            border-bottom: 4px solid #0891b2;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        header p {
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #64748b;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active {
-            color: #0891b2;
-            border-bottom-color: #0891b2;
-        }
-
-        .tab-btn:hover {
-            color: #0f172a;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .form-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #0891b2;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .form-section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: #1e293b;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #334155;
-            font-size: 0.95rem;
-        }
-
-        .form-group label .required {
-            color: #ef4444;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.375rem;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #0891b2;
-            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            border: none;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .btn-primary {
-            background-color: #0891b2;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #0e7490;
-        }
-
-        .btn-secondary {
-            background-color: #e2e8f0;
-            color: #334155;
-        }
-
-        .btn-secondary:hover {
-            background-color: #cbd5e1;
-        }
-
-        .btn-danger {
-            background-color: #ef4444;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        table thead {
-            background-color: #f1f5f9;
-            border-bottom: 2px solid #cbd5e1;
-        }
-
-        table th {
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 0.9rem;
-        }
-
-        table td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 0.9rem;
-        }
-
-        table tbody tr:hover {
-            background-color: #f8fafc;
-        }
-
-        table tbody tr:nth-child(even) {
-            background-color: #f9fafb;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .badge-impact {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-carry {
-            background-color: #cffafe;
-            color: #164e63;
-        }
-
-        .badge-other {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .summary-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #0891b2;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .summary-card h3 {
-            color: #64748b;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .summary-card .value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #0891b2;
-            font-family: 'Courier New', monospace;
-        }
-
-        .summary-card .percentage {
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-top: 0.5rem;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .chart-container h3 {
-            margin-bottom: 1.5rem;
-            color: #1e293b;
-        }
-
-        .chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            height: 300px;
-            gap: 1rem;
-            overflow-x: auto;
-            padding-bottom: 1rem;
-        }
-
-        .bar {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 0 0 auto;
-            min-width: 60px;
-        }
-
-        .bar-fill {
-            background: linear-gradient(180deg, #0891b2 0%, #06b6d4 100%);
-            border-radius: 0.25rem 0.25rem 0 0;
-            width: 100%;
-            transition: all 0.3s ease;
-            position: relative;
-            min-height: 20px;
-        }
-
-        .bar-fill:hover {
-            opacity: 0.8;
-        }
-
-        .bar-label {
-            margin-top: 0.5rem;
-            font-size: 0.75rem;
-            color: #64748b;
-            text-align: center;
-            word-break: break-word;
-        }
-
-        .bar-value {
-            position: absolute;
-            top: -1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 0.875rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: #64748b;
-        }
-
-        .empty-state p {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #64748b;
-        }
-
-        .spinner {
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid #0891b2;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .info-box {
-            background: #f0f9ff;
-            border-left: 4px solid #0891b2;
-            padding: 1.5rem;
-            border-radius: 0.375rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-box h3 {
-            color: #0f172a;
-            margin-bottom: 1rem;
-        }
-
-        .info-box p {
-            color: #334155;
-            margin-bottom: 0.5rem;
-        }
-
-        footer {
-            background: #1e293b;
-            color: white;
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 3rem;
-            border-top: 4px solid #0891b2;
-        }
-
-        .export-btn {
-            background-color: #10b981;
-        }
-
-        .export-btn:hover {
-            background-color: #059669;
-        }
-
-        .search-box {
-            margin-bottom: 1rem;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.375rem;
-            font-size: 1rem;
-        }
-
-        .refresh-btn {
-            background-color: #8b5cf6;
-        }
-
-        .refresh-btn:hover {
-            background-color: #7c3aed;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.75rem;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tabs {
-                flex-wrap: wrap;
-            }
-
-            table {
-                font-size: 0.75rem;
-            }
-
-            table th,
-            table td {
-                padding: 0.5rem;
-            }
-
-            .chart {
-                height: 250px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roller Tracking — BTT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f1117; --bg2:#161b26; --bg3:#1e2535; --bg4:#252d40;
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.12);
+  --text:#e8eaf2; --text2:#8891aa; --text3:#4a5268;
+  --accent:#3d8ef0; --accent2:#2563c0;
+  --green:#2ecc71; --amber:#f59e0b; --red:#ef4444;
+  --font:'IBM Plex Sans Thai',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:1.5rem;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--accent2);padding:3px 10px;border-radius:4px;flex-shrink:0}
+.nav-tabs{display:flex;gap:2px;flex:1}
+.nav-tab{padding:6px 14px;font-size:13px;color:var(--text2);cursor:pointer;border-radius:6px;display:flex;align-items:center;gap:6px;transition:all .15s;border:1px solid transparent;background:none}
+.nav-tab:hover{background:var(--bg3);color:var(--text)}
+.nav-tab.active{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.nav-tab svg{width:15px;height:15px;flex-shrink:0}
+.topbar-right{display:flex;align-items:center;gap:.75rem;margin-left:auto}
+.total-pill{font-family:var(--mono);font-size:12px;background:var(--bg3);border:1px solid var(--border2);padding:3px 10px;border-radius:99px;color:var(--text2)}
+.total-pill span{color:var(--accent);font-weight:500}
+.conn-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.conn-dot.ok{background:var(--green)} .conn-dot.err{background:var(--red)} .conn-dot.wait{background:var(--amber);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(15,17,23,.75);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.loading-overlay.hidden{display:none}
+.spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.main{flex:1;padding:1.5rem;max-width:1200px;margin:0 auto;width:100%}
+.page{display:none;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.page-header{margin-bottom:1.5rem}
+.page-header h1{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.page-header p{font-size:12px;color:var(--text2);margin-top:3px}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1rem}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.form-grid.two{grid-template-columns:1fr 1fr}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.fg input,.fg select{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:7px 10px;outline:none;width:100%;transition:border-color .15s,box-shadow .15s}
+.fg select option{background:var(--bg3)}
+.fg input:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(61,142,240,.15)}
+.fg input::placeholder{color:var(--text3)}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;margin-top:1.25rem;flex-wrap:wrap}
+.btn{padding:8px 18px;border-radius:7px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn:hover{background:var(--bg4);color:var(--text)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--accent2);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:#1a52a8;color:#fff}
+.btn-green{background:#166534;border-color:var(--green);color:#4ade80}
+.btn-green:hover{background:#14532d}
+.btn-red{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#f87171}
+.btn-red:hover{background:rgba(239,68,68,.25)}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;position:relative;overflow:hidden}
+.metric::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--mcolor,var(--accent));border-radius:0 0 10px 10px}
+.metric-label{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.metric-value{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1}
+.metric-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* TABLE */
+.table-toolbar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.table-toolbar input,.table-toolbar select{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:12px;padding:6px 10px;outline:none}
+.table-toolbar input{min-width:200px}
+.table-toolbar input::placeholder{color:var(--text3)}
+.table-toolbar input:focus,.table-toolbar select:focus{border-color:var(--accent)}
+.count-info{font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--mono)}
+
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.table-wrap table{width:100%;border-collapse:collapse;font-size:12px}
+.table-wrap thead tr{background:var(--bg3)}
+.table-wrap th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;border-bottom:1px solid var(--border)}
+.table-wrap td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table-wrap tbody tr:last-child td{border-bottom:none}
+.table-wrap tbody tr:hover td{background:rgba(255,255,255,.02)}
+.empty-td{text-align:center;padding:2.5rem;color:var(--text3)}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;letter-spacing:.04em;font-family:var(--mono)}
+.b-impact{background:rgba(61,142,240,.15);color:#60a5fa;border:1px solid rgba(61,142,240,.25)}
+.b-carry{background:rgba(46,204,113,.12);color:#4ade80;border:1px solid rgba(46,204,113,.2)}
+.b-return{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+.b-flat{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+.b-other{background:rgba(100,116,139,.12);color:#94a3b8;border:1px solid rgba(100,116,139,.2)}
+.b-cause{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.b-fix{background:rgba(6,182,212,.12);color:#22d3ee;border:1px solid rgba(6,182,212,.2)}
+.b-local{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2);font-size:9px}
+
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.chart-card.wide{grid-column:1/-1}
+.chart-card-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.07em}
+
+/* BAR CHART */
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding-bottom:2px;overflow-x:auto}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;min-width:48px}
+.bar-body{width:100%;border-radius:3px 3px 0 0;min-height:4px;transition:opacity .15s;position:relative}
+.bar-body:hover{opacity:.8}
+.bar-val{font-family:var(--mono);font-size:10px;color:var(--text2);font-weight:500}
+.bar-lbl{font-size:10px;color:var(--text3);text-align:center;word-break:break-all;max-width:56px}
+
+/* DONUT */
+.donut-wrap{display:flex;gap:1.5rem;align-items:center}
+.donut-legend{display:flex;flex-direction:column;gap:8px;flex:1}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-val{font-family:var(--mono);color:var(--text);margin-left:auto}
+
+/* SUMMARY TABLE */
+.summary-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem}
+.summary-card table{width:100%;border-collapse:collapse;font-size:12px}
+.summary-card th{background:var(--bg3);padding:8px 14px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
+.summary-card td{padding:8px 14px;border-bottom:1px solid var(--border);color:var(--text2)}
+.summary-card tbody tr:last-child td{border-bottom:none}
+.summary-card tbody tr:hover td{background:rgba(255,255,255,.02)}
+.summary-card td.num{font-family:var(--mono);color:var(--text);text-align:right}
+
+/* REPORT FILTER */
+.report-filter{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;padding:.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap}
+.report-filter label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.report-filter select{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none}
+
+/* NOTICE BOX */
+.notice{background:rgba(61,142,240,.07);border:1px solid rgba(61,142,240,.2);border-radius:8px;padding:.875rem 1rem;font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:1rem}
+.notice strong{color:var(--accent)}
+.prev-box{background:rgba(46,204,113,.07);border:1px solid rgba(46,204,113,.2);border-radius:8px;padding:.75rem 1rem;font-size:12px;color:var(--text2);display:none;margin-top:1rem;font-family:var(--mono);line-height:1.6}
+.prev-box strong{color:#4ade80}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text);opacity:0;transform:translateY(8px);transition:all .25s;z-index:9999;display:flex;align-items:center;gap:8px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:none}
+.toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+@media(max-width:768px){
+  .form-grid{grid-template-columns:1fr 1fr}
+  .metrics{grid-template-columns:1fr 1fr}
+  .chart-grid{grid-template-columns:1fr}
+  .chart-card.wide{grid-column:1}
+  .nav-tab span{display:none}
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>📊 Data Record System</h1>
-        <p>ระบบบันทึกข้อมูลการทำงานและสรุปผลประจำเดือน (ดึงข้อมูลจาก Google Sheets)</p>
-    </header>
 
-    <div class="container">
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('entry')">📝 กรอกข้อมูล</button>
-            <button class="tab-btn" onclick="switchTab('data')">📋 ข้อมูล</button>
-            <button class="tab-btn" onclick="switchTab('summary')">📊 สรุปผล</button>
-        </div>
-
-        <!-- Tab 1: Data Entry -->
-        <div id="entry" class="tab-content active">
-            <div class="form-section">
-                <h2>เพิ่มบันทึกข้อมูล</h2>
-                <form id="dataForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>วันที่ <span class="required">*</span></label>
-                            <input type="text" id="date" placeholder="เช่น 1-ม.ค." required>
-                        </div>
-                        <div class="form-group">
-                            <label>ประเภท <span class="required">*</span></label>
-                            <select id="type" required>
-                                <option value="">เลือกประเภท</option>
-                                <option value="Impact">Impact</option>
-                                <option value="Carry">Carry</option>
-                                <option value="Return ยาง">Return ยาง</option>
-                                <option value="Flat Return">Flat Return</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>SMU <span class="required">*</span></label>
-                            <input type="text" id="smu" placeholder="เช่น 66.436" required>
-                        </div>
-                        <div class="form-group">
-                            <label>BW</label>
-                            <input type="text" id="bw" placeholder="เช่น 2400">
-                        </div>
-                        <div class="form-group">
-                            <label>พื้นที่</label>
-                            <select id="area">
-                                <option value="">เลือกพื้นที่</option>
-                                <option value="SPD">SPD</option>
-                                <option value="S1">S1</option>
-                                <option value="S2C">S2C</option>
-                                <option value="S2B">S2B</option>
-                                <option value="S2A">S2A</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
-                                <option value="S5">S5</option>
-                                <option value="B1">B1</option>
-                                <option value="B2">B2</option>
-                                <option value="B3">B3</option>
-                                <option value="BWA2">BWA2</option>
-                                <option value="C2">C2</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>ตารางที่</label>
-                            <input type="text" id="table" placeholder="เช่น 1">
-                        </div>
-                        <div class="form-group">
-                            <label>กลุ่ม</label>
-                            <input type="text" id="group" placeholder="เช่น 55">
-                        </div>
-                        <div class="form-group">
-                            <label>ลูกกลิ้ง</label>
-                            <input type="text" id="roller" placeholder="เช่น 8">
-                        </div>
-                        <div class="form-group">
-                            <label>เทคโนโลยี</label>
-                            <input type="text" id="tech" placeholder="เช่น นายศราวุธ">
-                        </div>
-                        <div class="form-group">
-                            <label>สาเหตุ</label>
-                            <input type="text" id="cause" placeholder="เช่น BR-D">
-                        </div>
-                        <div class="form-group">
-                            <label>การแก้ไข</label>
-                            <input type="text" id="fix" placeholder="เช่น RE">
-                        </div>
-                    </div>
-                    <div class="button-group">
-                        <button type="submit" class="btn-primary">✓ บันทึกข้อมูล</button>
-                        <button type="reset" class="btn-secondary">↻ ล้างฟอร์ม</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="info-box">
-                <h3>💡 คำแนะนำการใช้งาน</h3>
-                <p><strong>ข้อมูลจาก Google Sheets:</strong> ระบบจะดึงข้อมูลจาก Google Sheets ของคุณโดยอัตโนมัติ</p>
-                <p><strong>เพิ่มข้อมูลใหม่:</strong> กรอกแบบฟอร์มด้านบนเพื่อเพิ่มบันทึกใหม่ (บันทึกใน Local Storage)</p>
-                <p><strong>ดูข้อมูลทั้งหมด:</strong> ไปที่แท็บ "ข้อมูล" เพื่อดูข้อมูลจาก Google Sheets + ข้อมูลใหม่ที่เพิ่มเข้ามา</p>
-            </div>
-        </div>
-
-        <!-- Tab 2: Data View -->
-        <div id="data" class="tab-content">
-            <div class="form-section">
-                <h2>บันทึกข้อมูลทั้งหมด</h2>
-                <div style="margin-bottom: 1rem; color: #64748b;">
-                    จำนวนทั้งหมด: <strong id="totalCount">0</strong> รายการ
-                    <button class="refresh-btn" onclick="loadDataFromSheet()" style="margin-left: 1rem;">🔄 รีเฟรชข้อมูล</button>
-                    <button class="export-btn" onclick="exportCSV()" style="margin-left: 0.5rem;">⬇ ส่งออก CSV</button>
-                </div>
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="🔍 ค้นหา..." onkeyup="filterTable()">
-                </div>
-                <div id="dataTableContainer"></div>
-            </div>
-        </div>
-
-        <!-- Tab 3: Monthly Summary -->
-        <div id="summary" class="tab-content">
-            <h2 style="margin-bottom: 2rem; color: #1e293b;">📊 สรุปผลประจำเดือน</h2>
-            <div id="summaryContainer"></div>
-        </div>
+<header class="topbar">
+  <div class="logo">BTT · ROLLER</div>
+  <nav class="nav-tabs">
+    <div class="nav-tab active" onclick="showPage('form')" id="nav-form">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+      <span>บันทึกข้อมูล</span>
     </div>
+    <div class="nav-tab" onclick="showPage('data')" id="nav-data">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M3 6h18M3 14h12M3 18h9"/></svg>
+      <span>ข้อมูลทั้งหมด</span>
+    </div>
+    <div class="nav-tab" onclick="showPage('report')" id="nav-report">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18h3v-7H3zM10 18h3V5h-3zM17 18h3v-4h-3z"/></svg>
+      <span>สรุปประจำเดือน</span>
+    </div>
+  </nav>
+  <div class="topbar-right">
+    <div class="conn-dot wait" id="conn-dot" title="กำลังโหลด..."></div>
+    <div class="total-pill">รวม <span id="total-count">—</span> รายการ</div>
+  </div>
+</header>
 
-    <footer>
-        <p>Data Record System © 2026 - บันทึกข้อมูลการทำงานอย่างมีประสิทธิภาพ</p>
-    </footer>
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+</div>
 
-    <script>
-        // Google Sheets Configuration
-        const SHEET_ID = '1ldhsqOTwWPTjUZ4O4e2jZqntQrvf2kSXVy1YLFU-1t8';
-        const SHEET_NAME = 'ชีต1'; // ชีต1 is the first sheet
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
-        
-        const STORAGE_KEY = 'data_records_local';
-        const MONTHS_TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-        
-        let allData = [];
+<main class="main">
 
-        // Parse CSV data
-        function parseCSV(csv) {
-            const lines = csv.trim().split('\n');
-            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-            const data = [];
+<!-- ===== FORM ===== -->
+<div class="page active" id="page-form">
+  <div class="page-header">
+    <h1>บันทึกการเปลี่ยนลูกกลิ้ง</h1>
+    <p>ข้อมูลจาก Google Sheets · รายการใหม่บันทึกเพิ่มในเครื่อง</p>
+  </div>
 
-            for (let i = 1; i < lines.length; i++) {
-                const obj = {};
-                const currentLine = lines[i].split(',');
-                
-                for (let j = 0; j < headers.length; j++) {
-                    obj[headers[j]] = currentLine[j] ? currentLine[j].trim().replace(/^"|"$/g, '') : '';
-                }
-                
-                if (obj.id && obj.date) {
-                    data.push(obj);
-                }
-            }
+  <div class="notice">
+    <strong>วิธีการทำงาน:</strong> ข้อมูลหลักดึงจาก Google Sheets โดยตรง · รายการที่กรอกใหม่จะบันทึกลง <strong>Local Storage</strong> ของเครื่องนี้และแสดงร่วมกัน · หากต้องการเพิ่มข้อมูลใหม่ลงใน Sheets จริง ให้เปิด Sheets แล้วกรอกเพิ่มโดยตรง
+  </div>
 
-            return data;
-        }
+  <div class="card">
+    <div class="card-title">ข้อมูลทั่วไป</div>
+    <div class="form-grid">
+      <div class="fg">
+        <label>วันที่เปลี่ยน *</label>
+        <input type="date" id="f-date"/>
+      </div>
+      <div class="fg">
+        <label>ตัวเลข SMU</label>
+        <input type="number" id="f-smu" placeholder="เช่น 53661"/>
+      </div>
+      <div class="fg">
+        <label>Belt Width (BW)</label>
+        <select id="f-bw">
+          <option value="">— เลือก BW —</option>
+          <option value="1600">BW 1600</option>
+          <option value="1800">BW 1800</option>
+          <option value="2200">BW 2200</option>
+          <option value="2400">BW 2400</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Type ลูกกลิ้ง *</label>
+        <select id="f-type">
+          <option value="">— เลือก Type —</option>
+          <option>Impact</option><option>Carry</option>
+          <option>Return เหล็ก</option><option>Return ยาง</option>
+          <option>Flat Return</option><option>Inverted</option>
+          <option>Vertical</option><option>Transition</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>พื้นที่ (ไลน์) *</label>
+        <select id="f-area">
+          <option value="">— เลือกพื้นที่ —</option>
+          <optgroup label="Line S"><option>S1</option><option>S2A</option><option>S2B</option><option>S2C</option><option>S2</option><option>S3</option><option>S4</option><option>S5</option></optgroup>
+          <optgroup label="Line C"><option>C1</option><option>C2</option><option>C3</option></optgroup>
+          <optgroup label="Line B"><option>B1</option><option>B2</option><option>B3</option></optgroup>
+          <optgroup label="อื่นๆ"><option>SPD</option><option>BWE1</option><option>BWE2</option><option>CR1</option><option>CR2</option><option>BWA1</option><option>BWA2</option></optgroup>
+        </select>
+      </div>
+      <div class="fg">
+        <label>เลขโต๊ะ</label>
+        <input type="text" id="f-table" placeholder="เช่น 5 หรือ -"/>
+      </div>
+      <div class="fg">
+        <label>เลขพวง</label>
+        <input type="number" id="f-group" placeholder="เช่น 1" min="1"/>
+      </div>
+      <div class="fg">
+        <label>เลขลูกกลิ้ง</label>
+        <input type="number" id="f-roller" placeholder="ถ้ามี" min="1"/>
+      </div>
+      <div class="fg">
+        <label>ชื่อผู้เปลี่ยน</label>
+        <select id="f-tech">
+          <option value="">— เลือกช่าง —</option>
+          <option>ท้าวอุดม</option><option>ท้าวกองสี</option><option>ท้าวนก</option>
+          <option>นายจำลอง</option><option>นายนรินทร์</option><option>นายสงกรานต์</option><option>นายศราวุธ</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-        // Load data from Google Sheets
-        async function loadDataFromSheet() {
-            const container = document.getElementById('dataTableContainer');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>กำลังโหลดข้อมูล...</p></div>';
+  <div class="card">
+    <div class="card-title">สาเหตุและการแก้ไข</div>
+    <div class="form-grid two">
+      <div class="fg">
+        <label>สาเหตุที่เสีย</label>
+        <select id="f-cause">
+          <option value="">— เลือกสาเหตุ —</option>
+          <option value="BR-D">แบริ่งแตก · BR-D</option>
+          <option value="LC">ล๊อก · LC</option>
+          <option value="LO">ยางร่อน · LO</option>
+          <option value="NI">เสียงดัง · NI</option>
+          <option value="SH">ปลอกขาด · SH</option>
+          <option value="LI-D">Link เสีย · LI-D</option>
+          <option value="BO-D">Bolt เสีย · BO-D</option>
+          <option value="BL-D">Bolt+Link เสีย · BL-D</option>
+          <option value="Shaft">เพลาสึก/เพลายาน · Shaft</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>การแก้ไข</label>
+        <select id="f-fix">
+          <option value="">— เลือกการแก้ไข —</option>
+          <option value="BR-N">เปลี่ยนแบริ่งใหม่ · BR-N</option>
+          <option value="BR-O">เปลี่ยนแบริ่งเก่า · BR-O</option>
+          <option value="LI">เปลี่ยน Link · LI</option>
+          <option value="BO">เปลี่ยน Bolt · BO</option>
+          <option value="BL">เปลี่ยน Bolt+Link · BL</option>
+          <option value="RE">Regrease · RE</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label>หมายเหตุ</label>
+        <input type="text" id="f-note" placeholder="รายละเอียดเพิ่มเติม"/>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveLocal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        บันทึก (Local)
+      </button>
+      <button class="btn" onclick="clearForm()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.46"/></svg>
+        ล้างฟอร์ม
+      </button>
+    </div>
+    <div class="prev-box" id="prev-box"></div>
+  </div>
 
-            try {
-                const response = await fetch(CSV_URL);
-                if (!response.ok) throw new Error('ไม่สามารถดึงข้อมูลจาก Google Sheets');
-                
-                const csv = await response.text();
-                const sheetData = parseCSV(csv);
-                
-                // Get local data
-                const localData = getLocalData();
-                
-                // Combine data
-                allData = [...sheetData, ...localData];
-                
-                renderDataTable();
-                renderSummary();
-            } catch (error) {
-                console.error('Error:', error);
-                container.innerHTML = `<div class="empty-state"><p>❌ ไม่สามารถดึงข้อมูลจาก Google Sheets</p><p style="font-size: 0.9rem; color: #94a3b8;">${error.message}</p></div>`;
-            }
-        }
+  <!-- Code Reference -->
+  <div class="card" style="border-color:rgba(139,92,246,.2)">
+    <div class="card-title" style="color:#a78bfa">คู่มือรหัส</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">สาเหตุ</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-cause">BR-D</span><span style="color:var(--text2)">แบริ่งแตก</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-cause">LC</span><span style="color:var(--text2)">ล๊อก</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-cause">LO</span><span style="color:var(--text2)">ยางร่อน</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-cause">NI</span><span style="color:var(--text2)">เสียงดัง</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-cause">BL-D</span><span style="color:var(--text2)">Bolt+Link Damage</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">การแก้ไข</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-fix">BR-N</span><span style="color:var(--text2)">เปลี่ยนแบริ่งใหม่</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-fix">BR-O</span><span style="color:var(--text2)">เปลี่ยนแบริ่งเก่า</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-fix">BL</span><span style="color:var(--text2)">เปลี่ยน Bolt+Link</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="badge b-fix">RE</span><span style="color:var(--text2)">Regrease</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Get local data from localStorage
-        function getLocalData() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            return stored ? JSON.parse(stored) : [];
-        }
+<!-- ===== DATA ===== -->
+<div class="page" id="page-data">
+  <div class="page-header">
+    <h1>ข้อมูลทั้งหมด</h1>
+    <p>รวม Google Sheets + รายการที่บันทึกในเครื่อง</p>
+  </div>
+  <div class="table-toolbar">
+    <input type="text" id="search" placeholder="🔍  ค้นหา พื้นที่ / ช่าง / สาเหตุ..." oninput="renderTable()"/>
+    <select id="filter-type" onchange="renderTable()">
+      <option value="">ทุก Type</option>
+      <option>Impact</option><option>Carry</option>
+      <option>Return เหล็ก</option><option>Return ยาง</option><option>Flat Return</option>
+    </select>
+    <select id="filter-area" onchange="renderTable()">
+      <option value="">ทุกพื้นที่</option>
+    </select>
+    <div class="btn-row" style="margin:0;gap:6px">
+      <button class="btn" style="padding:6px 12px;font-size:12px" onclick="refreshData()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.46"/></svg>
+        รีเฟรช
+      </button>
+      <button class="btn btn-green" style="padding:6px 12px;font-size:12px" onclick="exportCSV()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        CSV
+      </button>
+    </div>
+    <span class="count-info" id="filter-count"></span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>วันที่</th><th>Type</th><th>SMU</th><th>BW</th>
+        <th>พื้นที่</th><th>โต๊ะ</th><th>พวง</th><th>ลูก</th>
+        <th>สาเหตุ</th><th>แก้ไข</th><th>ช่าง</th><th>หมายเหตุ</th><th></th>
+      </tr></thead>
+      <tbody id="table-body"><tr><td colspan="14" class="empty-td">กำลังโหลด...</td></tr></tbody>
+    </table>
+  </div>
+</div>
 
-        // Save local data
-        function saveLocalData(records) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-        }
+<!-- ===== REPORT ===== -->
+<div class="page" id="page-report">
+  <div class="page-header">
+    <h1>สรุปประจำเดือน</h1>
+    <p>วิเคราะห์จากข้อมูลทั้งหมด (Google Sheets + Local)</p>
+  </div>
+  <div class="report-filter">
+    <label>เดือน</label>
+    <select id="r-month" onchange="renderReport()">
+      <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+      <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+      <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+      <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+      <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+      <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+    </select>
+    <label>ปี</label>
+    <select id="r-year" onchange="renderReport()">
+      <option value="2026">2026</option><option value="2025">2025</option>
+      <option value="2024">2024</option><option value="2023">2023</option>
+    </select>
+    <span style="font-size:11px;color:var(--text3)" id="r-label"></span>
+  </div>
 
-        // Set default date
-        function setDefaultDate() {
-            const today = new Date();
-            const day = today.getDate();
-            const month = MONTHS_TH[today.getMonth()];
-            document.getElementById('date').value = `${day}-${month}`;
-        }
+  <div class="metrics" id="r-metrics">
+    <div class="metric" style="--mcolor:var(--text3)"><div class="metric-label">รวมทั้งหมด</div><div class="metric-value" style="color:var(--text3)">—</div><div class="metric-sub">รายการซ่อม</div></div>
+    <div class="metric" style="--mcolor:var(--text3)"><div class="metric-label">Impact</div><div class="metric-value" style="color:var(--text3)">—</div><div class="metric-sub">—</div></div>
+    <div class="metric" style="--mcolor:var(--text3)"><div class="metric-label">Carry</div><div class="metric-value" style="color:var(--text3)">—</div><div class="metric-sub">—</div></div>
+    <div class="metric" style="--mcolor:var(--text3)"><div class="metric-label">แบริ่งแตก BR-D</div><div class="metric-value" style="color:var(--text3)">—</div><div class="metric-sub">—</div></div>
+  </div>
 
-        // Add record
-        document.getElementById('dataForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-card-title">จำนวนตามประเภท</div>
+      <div id="chart-type"><div style="color:var(--text3);font-size:12px">กำลังโหลด...</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">สาเหตุการเสีย</div>
+      <div class="bar-chart" id="chart-cause"></div>
+    </div>
+    <div class="chart-card wide">
+      <div class="chart-card-title">ซ่อมรายพื้นที่</div>
+      <div class="bar-chart" id="chart-area"></div>
+    </div>
+  </div>
 
-            const record = {
-                id: Date.now().toString(),
-                date: document.getElementById('date').value,
-                type: document.getElementById('type').value,
-                smu: document.getElementById('smu').value,
-                bw: document.getElementById('bw').value,
-                area: document.getElementById('area').value,
-                table: document.getElementById('table').value,
-                group: document.getElementById('group').value,
-                roller: document.getElementById('roller').value,
-                tech: document.getElementById('tech').value,
-                cause: document.getElementById('cause').value,
-                fix: document.getElementById('fix').value,
-            };
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem">
+    <div class="summary-card">
+      <table><thead><tr><th>Type</th><th class="num" style="text-align:right">จำนวน</th><th class="num" style="text-align:right">%</th></tr></thead>
+      <tbody id="type-body"></tbody></table>
+    </div>
+    <div class="summary-card">
+      <table><thead><tr><th>ช่าง</th><th class="num" style="text-align:right">รวม</th><th class="num" style="text-align:right">Impact</th><th class="num" style="text-align:right">Carry</th></tr></thead>
+      <tbody id="tech-body"></tbody></table>
+    </div>
+  </div>
 
-            const localData = getLocalData();
-            localData.push(record);
-            saveLocalData(localData);
+  <div class="summary-card">
+    <table>
+      <thead><tr><th>สาเหตุ</th><th>BR-N</th><th>BR-O</th><th>LI</th><th>BO</th><th>BL</th><th>RE</th><th style="text-align:right">รวม</th></tr></thead>
+      <tbody id="matrix-body"></tbody>
+    </table>
+  </div>
+</div>
 
-            alert('✓ บันทึกข้อมูลสำเร็จ');
-            this.reset();
-            setDefaultDate();
-            loadDataFromSheet();
-        });
+</main>
 
-        // Render data table
-        function renderDataTable() {
-            const container = document.getElementById('dataTableContainer');
+<div class="toast" id="toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
 
-            if (allData.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>ยังไม่มีข้อมูลบันทึก</p></div>';
-                document.getElementById('totalCount').textContent = '0';
-                return;
-            }
+<script>
+// ─── CONFIG — แก้ SHEET_ID ให้ตรงกับ Google Sheets ของคุณ ───
+const SHEET_ID  = '1ldhsqOTwWPTjUZ4O4e2jZqntQrvf2kSXVy1YLFU-1t8';
+const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+const LOCAL_KEY = 'roller_local_v2';
 
-            document.getElementById('totalCount').textContent = allData.length;
+const MONTHS_TH = ['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const MONTH_SHORT = {'ม.ค.':1,'ก.พ.':2,'มี.ค.':3,'เม.ย.':4,'พ.ค.':5,'มิ.ย.':6,'ก.ค.':7,'ส.ค.':8,'ก.ย.':9,'ต.ค.':10,'พ.ย.':11,'ธ.ค.':12};
+const TYPE_COLORS = {'Impact':'#3d8ef0','Carry':'#2ecc71','Return เหล็ก':'#f59e0b','Return ยาง':'#e67e22','Flat Return':'#8b5cf6','default':'#64748b'};
+const CAUSE_COLORS = {'BR-D':'#ef4444','LC':'#f59e0b','LO':'#e67e22','NI':'#8b5cf6','SH':'#ec4899','LI-D':'#3d8ef0','BO-D':'#2ecc71','BL-D':'#06b6d4','Shaft':'#64748b'};
 
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>วันที่</th>
-                            <th>ประเภท</th>
-                            <th>SMU</th>
-                            <th>BW</th>
-                            <th>พื้นที่</th>
-                            <th>ตารางที่</th>
-                            <th>กลุ่ม</th>
-                            <th>ลูกกลิ้ง</th>
-                            <th>เทคโนโลยี</th>
-                            <th>สาเหตุ</th>
-                            <th>แก้ไข</th>
-                            <th>ลบ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+let sheetData = [];   // จาก Google Sheets
+let localData = [];   // จาก localStorage
+let allData   = [];   // รวม
 
-            allData.forEach((record) => {
-                let badgeClass = 'badge-other';
-                if (record.type === 'Impact') badgeClass = 'badge-impact';
-                else if (record.type === 'Carry') badgeClass = 'badge-carry';
+// ─── INIT ─────────────────────────────────────────────────────
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+document.getElementById('r-month').value = new Date().getMonth() + 1;
+document.getElementById('r-year').value  = new Date().getFullYear();
 
-                const badge = `<span class="badge ${badgeClass}">${record.type}</span>`;
-                const isLocal = record.id && record.id.length > 10; // Local records have timestamp IDs
+localData = loadLocal();
+fetchSheetData();
 
-                html += `
-                    <tr>
-                        <td>${record.date}</td>
-                        <td>${badge}</td>
-                        <td>${record.smu}</td>
-                        <td>${record.bw || '-'}</td>
-                        <td>${record.area || '-'}</td>
-                        <td>${record.table || '-'}</td>
-                        <td>${record.group || '-'}</td>
-                        <td>${record.roller || '-'}</td>
-                        <td>${record.tech || '-'}</td>
-                        <td>${record.cause || '-'}</td>
-                        <td>${record.fix || '-'}</td>
-                        <td>${isLocal ? `<button class="btn-danger" onclick="deleteLocalRecord('${record.id}')">ลบ</button>` : '-'}</td>
-                    </tr>
-                `;
-            });
+// ─── GOOGLE SHEETS CSV ────────────────────────────────────────
+async function fetchSheetData() {
+  showLoad();
+  setDot('wait');
+  try {
+    const res = await fetch(CSV_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const csv = await res.text();
+    sheetData = parseCSV(csv);
+    setDot('ok');
+    toast('โหลด Google Sheets สำเร็จ · ' + sheetData.length + ' รายการ');
+  } catch(e) {
+    setDot('err');
+    toast('ไม่สามารถดึง Google Sheets: ' + e.message + ' · ใช้ข้อมูล Local แทน', false);
+    sheetData = [];
+  }
+  mergeData();
+  hideLoad();
+}
 
-            html += `
-                    </tbody>
-                </table>
-            `;
+async function refreshData() {
+  await fetchSheetData();
+  renderTable();
+  renderReport();
+}
 
-            container.innerHTML = html;
-        }
+function parseCSV(csv) {
+  const lines = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = splitCSVLine(lines[0]).map(h => h.toLowerCase().trim());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const vals = splitCSVLine(lines[i]);
+    const obj = { _source: 'sheet' };
+    headers.forEach((h, j) => { obj[h] = (vals[j] || '').trim(); });
+    // รองรับทั้ง header ไทยและอังกฤษ
+    obj.date  = obj.date  || obj['วันที่'] || obj['วันที่เปลี่ยน'] || '';
+    obj.type  = obj.type  || obj['ประเภท'] || obj['type ลูกกลิ้ง'] || '';
+    obj.smu   = obj.smu   || obj['smu'] || '';
+    obj.bw    = obj.bw    || obj['bw'] || '';
+    obj.area  = obj.area  || obj['พื้นที่'] || '';
+    obj.table = obj.table || obj['ตารางที่'] || obj['โต๊ะ'] || '';
+    obj.group = obj.group || obj['กลุ่ม'] || obj['พวง'] || '';
+    obj.roller= obj.roller|| obj['ลูกกลิ้ง'] || obj['ลูก'] || '';
+    obj.tech  = obj.tech  || obj['เทคโนโลยี'] || obj['ช่าง'] || '';
+    obj.cause = obj.cause || obj['สาเหตุ'] || '';
+    obj.fix   = obj.fix   || obj['แก้ไข'] || '';
+    obj.note  = obj.note  || obj['หมายเหตุ'] || '';
+    if (obj.date || obj.type) rows.push(obj);
+  }
+  return rows;
+}
 
-        // Filter table
-        function filterTable() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const container = document.getElementById('dataTableContainer');
-            
-            const filtered = allData.filter(r => 
-                (r.date && r.date.toLowerCase().includes(searchInput)) ||
-                (r.type && r.type.toLowerCase().includes(searchInput)) ||
-                (r.smu && r.smu.toLowerCase().includes(searchInput)) ||
-                (r.area && r.area.toLowerCase().includes(searchInput)) ||
-                (r.cause && r.cause.toLowerCase().includes(searchInput))
-            );
+function splitCSVLine(line) {
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur);
+  return result;
+}
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>ไม่พบข้อมูลที่ตรงกับการค้นหา</p></div>';
-                return;
-            }
+function mergeData() {
+  allData = [...sheetData, ...localData];
+  document.getElementById('total-count').textContent = allData.length.toLocaleString();
+  // populate area filter
+  const areas = [...new Set(allData.map(r => r.area).filter(Boolean))].sort();
+  const fa = document.getElementById('filter-area');
+  const cur = fa.value;
+  fa.innerHTML = '<option value="">ทุกพื้นที่</option>' + areas.map(a=>`<option ${a===cur?'selected':''}>${a}</option>`).join('');
+}
 
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>วันที่</th>
-                            <th>ประเภท</th>
-                            <th>SMU</th>
-                            <th>BW</th>
-                            <th>พื้นที่</th>
-                            <th>ตารางที่</th>
-                            <th>กลุ่ม</th>
-                            <th>ลูกกลิ้ง</th>
-                            <th>เทคโนโลยี</th>
-                            <th>สาเหตุ</th>
-                            <th>แก้ไข</th>
-                            <th>ลบ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+// ─── LOCAL STORAGE ────────────────────────────────────────────
+function loadLocal() {
+  try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveLocal() {
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(localData)); } catch(e) {}
+}
 
-            filtered.forEach((record) => {
-                let badgeClass = 'badge-other';
-                if (record.type === 'Impact') badgeClass = 'badge-impact';
-                else if (record.type === 'Carry') badgeClass = 'badge-carry';
+// ─── FORM ─────────────────────────────────────────────────────
+function saveLocalRecord() {
+  const date = document.getElementById('f-date').value;
+  const type = document.getElementById('f-type').value;
+  const area = document.getElementById('f-area').value;
+  if (!date || !type || !area) { toast('กรุณากรอก วันที่, Type และพื้นที่', false); return; }
+  const rec = {
+    _source: 'local',
+    _lid: Date.now().toString(),
+    date, type, area,
+    smu  : document.getElementById('f-smu').value,
+    bw   : document.getElementById('f-bw').value,
+    table: document.getElementById('f-table').value || '-',
+    group: document.getElementById('f-group').value,
+    roller:document.getElementById('f-roller').value,
+    tech : document.getElementById('f-tech').value,
+    cause: document.getElementById('f-cause').value,
+    fix  : document.getElementById('f-fix').value,
+    note : document.getElementById('f-note').value,
+  };
+  localData.push(rec);
+  saveLocal();
+  mergeData();
+  const box = document.getElementById('prev-box');
+  box.style.display = 'block';
+  box.innerHTML = `<strong>บันทึกแล้ว (Local)</strong> &nbsp;·&nbsp; ${rec.date} &nbsp;·&nbsp; <strong>${rec.type}</strong> &nbsp;·&nbsp; ${rec.area} พวง ${rec.group||'-'} &nbsp;·&nbsp; ${rec.cause||'-'} → ${rec.fix||'-'}`;
+  clearForm();
+  toast('บันทึกสำเร็จ (Local Storage)');
+}
 
-                const badge = `<span class="badge ${badgeClass}">${record.type}</span>`;
-                const isLocal = record.id && record.id.length > 10;
+// alias ให้ปุ่ม
+function saveLocal() { saveLocalRecord(); }
 
-                html += `
-                    <tr>
-                        <td>${record.date}</td>
-                        <td>${badge}</td>
-                        <td>${record.smu}</td>
-                        <td>${record.bw || '-'}</td>
-                        <td>${record.area || '-'}</td>
-                        <td>${record.table || '-'}</td>
-                        <td>${record.group || '-'}</td>
-                        <td>${record.roller || '-'}</td>
-                        <td>${record.tech || '-'}</td>
-                        <td>${record.cause || '-'}</td>
-                        <td>${record.fix || '-'}</td>
-                        <td>${isLocal ? `<button class="btn-danger" onclick="deleteLocalRecord('${record.id}')">ลบ</button>` : '-'}</td>
-                    </tr>
-                `;
-            });
+function clearForm() {
+  ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+}
 
-            html += `
-                    </tbody>
-                </table>
-            `;
+// ─── PAGE NAV ─────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if (name === 'data')   renderTable();
+  if (name === 'report') renderReport();
+}
 
-            container.innerHTML = html;
-        }
+// ─── TABLE ────────────────────────────────────────────────────
+function typeBadge(t) {
+  const cls = t==='Impact'?'b-impact':t==='Carry'?'b-carry':(t||'').startsWith('Return')?'b-return':(t||'').startsWith('Flat')?'b-flat':'b-other';
+  return `<span class="badge ${cls}">${t||'—'}</span>`;
+}
 
-        // Delete local record
-        function deleteLocalRecord(id) {
-            if (confirm('ต้องการลบข้อมูลนี้ใช่ไหม?')) {
-                let localData = getLocalData();
-                localData = localData.filter(r => r.id !== id);
-                saveLocalData(localData);
-                loadDataFromSheet();
-            }
-        }
+function renderTable() {
+  const q  = (document.getElementById('search').value||'').toLowerCase();
+  const ft = document.getElementById('filter-type').value;
+  const fa = document.getElementById('filter-area').value;
+  let data = [...allData].reverse();
+  if (q)  data = data.filter(r => JSON.stringify(r).toLowerCase().includes(q));
+  if (ft) data = data.filter(r => r.type === ft);
+  if (fa) data = data.filter(r => r.area === fa);
+  document.getElementById('filter-count').textContent = data.length.toLocaleString() + ' รายการ';
+  const body = document.getElementById('table-body');
+  if (!data.length) { body.innerHTML = `<tr><td colspan="14" class="empty-td">ไม่มีข้อมูลที่ตรงกับเงื่อนไข</td></tr>`; return; }
+  body.innerHTML = data.slice(0, 500).map((r, i) => `<tr>
+    <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${data.length - i}</td>
+    <td style="white-space:nowrap;font-family:var(--mono);font-size:12px">${r.date||''}</td>
+    <td>${typeBadge(r.type)}</td>
+    <td style="font-family:var(--mono);font-size:11px;color:var(--text2)">${r.smu||''}</td>
+    <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${r.bw?'BW'+r.bw:''}</td>
+    <td style="font-weight:500">${r.area||''}</td>
+    <td style="color:var(--text3)">${r.table||''}</td>
+    <td style="color:var(--text2)">${r.group||''}</td>
+    <td style="color:var(--text2)">${r.roller||''}</td>
+    <td>${r.cause?`<span class="badge b-cause">${r.cause}</span>`:''}</td>
+    <td>${r.fix?`<span class="badge b-fix">${r.fix}</span>`:''}</td>
+    <td style="font-size:12px;color:var(--text2);white-space:nowrap">${r.tech||''}</td>
+    <td style="font-size:11px;color:var(--text3);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.note||''}</td>
+    <td>${r._source==='local'?`<span class="badge b-local" style="cursor:pointer" onclick="deleteLocal('${r._lid}')">✕ local</span>`:''}</td>
+  </tr>`).join('');
+}
 
-        // Render summary
-        function renderSummary() {
-            const today = new Date();
-            const currentMonth = today.getMonth() + 1;
+function deleteLocal(lid) {
+  if (!confirm('ลบรายการ Local นี้?')) return;
+  localData = localData.filter(r => r._lid !== lid);
+  saveLocal();
+  mergeData();
+  renderTable();
+  toast('ลบแล้ว');
+}
 
-            // Filter by month
-            const monthlyRecords = allData.filter(r => {
-                if (!r.date) return false;
-                const parts = r.date.split('-');
-                const monthStr = parts[1];
-                const monthMap = {
-                    'ม.ค.': 1, 'ก.พ.': 2, 'มี.ค.': 3, 'เม.ย.': 4, 'พ.ค.': 5, 'มิ.ย.': 6,
-                    'ก.ค.': 7, 'ส.ค.': 8, 'ก.ย.': 9, 'ต.ค.': 10, 'พ.ย.': 11, 'ธ.ค.': 12
-                };
-                return monthMap[monthStr] === currentMonth;
-            });
+// ─── REPORT ───────────────────────────────────────────────────
+function getMonthNum(dateStr) {
+  if (!dateStr) return null;
+  // รูปแบบ YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return parseInt(dateStr.split('-')[1]);
+  // รูปแบบ D-ม.ค.
+  const parts = dateStr.split('-');
+  if (parts.length >= 2) return MONTH_SHORT[parts[1]] || null;
+  return null;
+}
+function getYearNum(dateStr) {
+  if (!dateStr) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return parseInt(dateStr.split('-')[0]);
+  return new Date().getFullYear(); // ถ้าไม่มีปีให้ใช้ปีปัจจุบัน
+}
 
-            const totalRecords = monthlyRecords.length;
-            const impactCount = monthlyRecords.filter(r => r.type === 'Impact').length;
-            const carryCount = monthlyRecords.filter(r => r.type === 'Carry').length;
+function renderReport() {
+  const month = parseInt(document.getElementById('r-month').value);
+  const year  = parseInt(document.getElementById('r-year').value);
+  document.getElementById('r-label').textContent = `· ${MONTHS_TH[month]} ${year}`;
 
-            // Area breakdown
-            const areaMap = {};
-            monthlyRecords.forEach(r => {
-                if (r.area) {
-                    areaMap[r.area] = (areaMap[r.area] || 0) + 1;
-                }
-            });
+  const data = allData.filter(r => getMonthNum(r.date) === month && getYearNum(r.date) === year);
+  const total = data.length;
+  const impact = data.filter(r => r.type === 'Impact').length;
+  const carry  = data.filter(r => r.type === 'Carry').length;
+  const brDmg  = data.filter(r => r.cause === 'BR-D').length;
 
-            // Cause breakdown
-            const causeMap = {};
-            monthlyRecords.forEach(r => {
-                if (r.cause) {
-                    causeMap[r.cause] = (causeMap[r.cause] || 0) + 1;
-                }
-            });
+  document.getElementById('r-metrics').innerHTML = `
+    <div class="metric" style="--mcolor:${total?'#3d8ef0':'#4a5268'}">
+      <div class="metric-label">รวมทั้งหมด</div>
+      <div class="metric-value" style="color:${total?'#60a5fa':'var(--text3)'}">${total}</div>
+      <div class="metric-sub">รายการซ่อม</div>
+    </div>
+    <div class="metric" style="--mcolor:#3d8ef0">
+      <div class="metric-label">Impact</div>
+      <div class="metric-value" style="color:#60a5fa">${impact}</div>
+      <div class="metric-sub">${total?Math.round(impact/total*100):0}%</div>
+    </div>
+    <div class="metric" style="--mcolor:#2ecc71">
+      <div class="metric-label">Carry</div>
+      <div class="metric-value" style="color:#4ade80">${carry}</div>
+      <div class="metric-sub">${total?Math.round(carry/total*100):0}%</div>
+    </div>
+    <div class="metric" style="--mcolor:#ef4444">
+      <div class="metric-label">แบริ่งแตก (BR-D)</div>
+      <div class="metric-value" style="color:#f87171">${brDmg}</div>
+      <div class="metric-sub">${total?Math.round(brDmg/total*100):0}%</div>
+    </div>`;
 
-            const container = document.getElementById('summaryContainer');
+  // Type donut (CSS-based)
+  const typeCnt = {};
+  data.forEach(r => { typeCnt[r.type] = (typeCnt[r.type]||0)+1; });
+  const tEntries = Object.entries(typeCnt).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('chart-type').innerHTML = `
+    <div class="donut-wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        ${buildDonut(tEntries, total, 120)}
+      </svg>
+      <div class="donut-legend">
+        ${tEntries.map(([k,v])=>`<div class="legend-item"><div class="legend-dot" style="background:${TYPE_COLORS[k]||TYPE_COLORS.default}"></div><span>${k}</span><span class="legend-val">${v}</span></div>`).join('')}
+        ${!tEntries.length?'<div style="color:var(--text3);font-size:12px">ไม่มีข้อมูล</div>':''}
+      </div>
+    </div>`;
 
-            if (totalRecords === 0) {
-                container.innerHTML = '<div class="empty-state"><p>ไม่มีข้อมูลสำหรับเดือนนี้</p></div>';
-                return;
-            }
+  // Cause bar
+  const causeCnt = {};
+  data.forEach(r => { if(r.cause) causeCnt[r.cause] = (causeCnt[r.cause]||0)+1; });
+  renderBarChart('chart-cause', Object.entries(causeCnt).sort((a,b)=>b[1]-a[1]), CAUSE_COLORS, '#64748b');
 
-            let html = `
-                <div class="summary-grid">
-                    <div class="summary-card">
-                        <h3>รวมทั้งหมด</h3>
-                        <div class="value">${totalRecords}</div>
-                        <div class="percentage">รายการ</div>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Impact</h3>
-                        <div class="value">${impactCount}</div>
-                        <div class="percentage">${totalRecords > 0 ? Math.round((impactCount / totalRecords) * 100) : 0}%</div>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Carry</h3>
-                        <div class="value">${carryCount}</div>
-                        <div class="percentage">${totalRecords > 0 ? Math.round((carryCount / totalRecords) * 100) : 0}%</div>
-                    </div>
-                    <div class="summary-card">
-                        <h3>พื้นที่</h3>
-                        <div class="value">${Object.keys(areaMap).length}</div>
-                        <div class="percentage">ประเภท</div>
-                    </div>
-                </div>
-            `;
+  // Area bar
+  const areaCnt = {};
+  data.forEach(r => { if(r.area) areaCnt[r.area] = (areaCnt[r.area]||0)+1; });
+  renderBarChart('chart-area', Object.entries(areaCnt).sort((a,b)=>b[1]-a[1]), {}, '#3d8ef0');
 
-            // Type chart
-            if (impactCount > 0 || carryCount > 0) {
-                const maxType = Math.max(impactCount, carryCount);
-                html += `
-                    <div class="chart-container">
-                        <h3>การกระจายตามประเภท</h3>
-                        <div class="chart">
-                            <div class="bar">
-                                <div class="bar-fill" style="height: ${(impactCount / maxType) * 100}%;">
-                                    <div class="bar-value">${impactCount}</div>
-                                </div>
-                                <div class="bar-label">Impact</div>
-                            </div>
-                            <div class="bar">
-                                <div class="bar-fill" style="height: ${(carryCount / maxType) * 100}%;">
-                                    <div class="bar-value">${carryCount}</div>
-                                </div>
-                                <div class="bar-label">Carry</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
+  // Type table
+  document.getElementById('type-body').innerHTML = tEntries.length
+    ? tEntries.map(([k,v])=>`<tr><td>${typeBadge(k)}</td><td class="num">${v}</td><td class="num" style="color:var(--text3)">${total?Math.round(v/total*100):0}%</td></tr>`).join('')
+    : '<tr><td colspan="3" class="empty-td">ไม่มีข้อมูล</td></tr>';
 
-            // Area chart
-            if (Object.keys(areaMap).length > 0) {
-                const areas = Object.entries(areaMap).sort((a, b) => b[1] - a[1]);
-                const maxArea = Math.max(...areas.map(a => a[1]));
-                html += `
-                    <div class="chart-container">
-                        <h3>การกระจายตามพื้นที่</h3>
-                        <div class="chart">
-                `;
-                areas.forEach(([area, count]) => {
-                    html += `
-                        <div class="bar">
-                            <div class="bar-fill" style="height: ${(count / maxArea) * 100}%;">
-                                <div class="bar-value">${count}</div>
-                            </div>
-                            <div class="bar-label">${area}</div>
-                        </div>
-                    `;
-                });
-                html += `
-                        </div>
-                    </div>
-                `;
-            }
+  // Tech table
+  const techMap = {};
+  data.forEach(r => {
+    if (!r.tech) return;
+    if (!techMap[r.tech]) techMap[r.tech] = {t:0,i:0,c:0};
+    techMap[r.tech].t++;
+    if(r.type==='Impact') techMap[r.tech].i++;
+    if(r.type==='Carry')  techMap[r.tech].c++;
+  });
+  document.getElementById('tech-body').innerHTML = Object.entries(techMap).length
+    ? Object.entries(techMap).sort((a,b)=>b[1].t-a[1].t).map(([k,v])=>`<tr><td style="color:var(--text)">${k}</td><td class="num">${v.t}</td><td class="num" style="color:#60a5fa">${v.i}</td><td class="num" style="color:#4ade80">${v.c}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty-td">ไม่มีข้อมูล</td></tr>';
 
-            // Top causes
-            if (Object.keys(causeMap).length > 0) {
-                const causes = Object.entries(causeMap)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10);
-                const maxCause = Math.max(...causes.map(c => c[1]));
-                html += `
-                    <div class="chart-container">
-                        <h3>สาเหตุหลัก (Top 10)</h3>
-                        <div class="chart">
-                `;
-                causes.forEach(([cause, count]) => {
-                    html += `
-                        <div class="bar">
-                            <div class="bar-fill" style="height: ${(count / maxCause) * 100}%;">
-                                <div class="bar-value">${count}</div>
-                            </div>
-                            <div class="bar-label">${cause || 'ว่าง'}</div>
-                        </div>
-                    `;
-                });
-                html += `
-                        </div>
-                    </div>
-                `;
-            }
+  // Cause × Fix matrix
+  const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
+  const fixes  = ['BR-N','BR-O','LI','BO','BL','RE'];
+  const mx = {};
+  data.forEach(r => { if(!r.cause) return; if(!mx[r.cause]) mx[r.cause]={}; mx[r.cause][r.fix]=(mx[r.cause][r.fix]||0)+1; });
+  document.getElementById('matrix-body').innerHTML = causes.filter(c=>mx[c]).map(c => {
+    const row = mx[c], rt = Object.values(row).reduce((a,b)=>a+b,0);
+    return `<tr><td><span class="badge b-cause">${c}</span></td>${fixes.map(f=>`<td style="text-align:center;font-family:var(--mono);font-size:12px;color:${row[f]?'var(--text)':'var(--text3)'}">${row[f]||'—'}</td>`).join('')}<td class="num">${rt}</td></tr>`;
+  }).join('') || '<tr><td colspan="8" class="empty-td">ไม่มีข้อมูล</td></tr>';
+}
 
-            container.innerHTML = html;
-        }
+function buildDonut(entries, total, size) {
+  if (!total) return `<circle cx="60" cy="60" r="40" fill="none" stroke="var(--bg4)" stroke-width="18"/>`;
+  const r = 40, cx = 60, cy = 60, circ = 2 * Math.PI * r;
+  let offset = 0, paths = '';
+  entries.forEach(([k, v]) => {
+    const pct = v / total;
+    const dash = pct * circ;
+    const color = TYPE_COLORS[k] || TYPE_COLORS.default;
+    paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="18"
+      stroke-dasharray="${dash} ${circ - dash}"
+      stroke-dashoffset="${-offset}"
+      transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += dash;
+  });
+  return paths + `<text x="60" y="64" text-anchor="middle" fill="var(--text)" font-family="var(--mono)" font-size="18" font-weight="500">${total}</text>`;
+}
 
-        // Export to CSV
-        function exportCSV() {
-            if (allData.length === 0) {
-                alert('ไม่มีข้อมูลให้ส่งออก');
-                return;
-            }
+function renderBarChart(id, entries, colorMap, fallback) {
+  const el = document.getElementById(id);
+  if (!entries.length) { el.innerHTML = `<div style="color:var(--text3);font-size:12px;padding:.5rem">ไม่มีข้อมูล</div>`; return; }
+  const max = Math.max(...entries.map(([,v])=>v));
+  el.innerHTML = entries.map(([k,v]) => {
+    const h = Math.max(Math.round((v/max)*160), 6);
+    const color = colorMap[k] || fallback;
+    return `<div class="bar-col">
+      <span class="bar-val">${v}</span>
+      <div class="bar-body" style="height:${h}px;background:${color}" title="${k}: ${v}"></div>
+      <span class="bar-lbl">${k}</span>
+    </div>`;
+  }).join('');
+}
 
-            const headers = ['ID', 'วันที่', 'ประเภท', 'SMU', 'BW', 'พื้นที่', 'ตารางที่', 'กลุ่ม', 'ลูกกลิ้ง', 'เทคโนโลยี', 'สาเหตุ', 'แก้ไข'];
-            let csv = headers.join(',') + '\n';
+// ─── EXPORT ───────────────────────────────────────────────────
+function exportCSV() {
+  if (!allData.length) { toast('ไม่มีข้อมูลให้ส่งออก', false); return; }
+  const heads = ['date','type','smu','bw','area','table','group','roller','tech','cause','fix','note'];
+  const esc = v => `"${(v||'').toString().replace(/"/g,'""')}"`;
+  const csv = [heads.join(','), ...allData.map(r => heads.map(h=>esc(r[h])).join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = `roller_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast('ดาวน์โหลด CSV แล้ว');
+}
 
-            allData.forEach(r => {
-                csv += [r.id, r.date, r.type, r.smu, r.bw, r.area, r.table, r.group, r.roller, r.tech, r.cause, r.fix]
-                    .map(cell => `"${cell || ''}"`)
-                    .join(',') + '\n';
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `data_records_${new Date().toISOString().split('T')[0]}.csv`);
-            link.click();
-        }
-
-        // Switch tabs
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-
-            if (tabName === 'data') {
-                renderDataTable();
-            } else if (tabName === 'summary') {
-                renderSummary();
-            }
-        }
-
-        // Initialize
-        window.addEventListener('DOMContentLoaded', function() {
-            setDefaultDate();
-            loadDataFromSheet();
-        });
-    </script>
+// ─── UI HELPERS ───────────────────────────────────────────────
+function setDot(s) {
+  const d = document.getElementById('conn-dot');
+  d.className = 'conn-dot ' + s;
+  d.title = s==='ok'?'เชื่อมต่อ Sheets แล้ว':s==='err'?'เชื่อมต่อไม่ได้':'กำลังโหลด...';
+}
+function showLoad() { document.getElementById('loading').classList.remove('hidden'); }
+function hideLoad() { document.getElementById('loading').classList.add('hidden'); }
+function toast(msg, ok=true) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-dot').style.background = ok?'#2ecc71':'#ef4444';
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+</script>
 </body>
 </html>
