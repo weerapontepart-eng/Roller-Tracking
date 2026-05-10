@@ -210,19 +210,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <p>ข้อมูลจาก Google Sheets · รายการใหม่บันทึกเพิ่มในเครื่อง</p>
   </div>
 
-  <div class="notice">
-    <strong>วิธีการทำงาน:</strong> ข้อมูลหลักดึงจาก Google Sheets โดยตรง · รายการที่กรอกใหม่จะบันทึกลง <strong>Local Storage</strong> ของเครื่องนี้และแสดงร่วมกัน · หากต้องการเพิ่มข้อมูลใหม่ลงใน Sheets จริง ให้เปิด Sheets แล้วกรอกเพิ่มโดยตรง
+  <div class="notice" id="script-notice">
+    <strong>⚙️ ตั้งค่าก่อนใช้งาน:</strong> วาง Apps Script URL เพื่อบันทึกลง Google Sheets ได้เลย &nbsp;
+    <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/…/exec"
+      style="background:var(--bg3);border:1px solid rgba(245,158,11,.4);border-radius:5px;color:var(--text);font-size:12px;padding:4px 8px;outline:none;width:360px;margin-right:6px"/>
+    <button class="btn btn-primary" style="padding:4px 12px;font-size:12px;display:inline-flex" onclick="saveScriptUrl()">บันทึก URL</button>
+  </div>
+  <div class="notice" id="script-ok" style="display:none;background:rgba(46,204,113,.07);border-color:rgba(46,204,113,.2)">
+    <strong style="color:#4ade80">✓ เชื่อมต่อ Google Sheets แล้ว</strong> · ข้อมูลจะบันทึกลง Sheets โดยตรง &nbsp;
+    <span style="color:var(--text3);font-size:11px" id="script-url-display"></span> &nbsp;
+    <span style="cursor:pointer;color:var(--text3);font-size:11px;text-decoration:underline" onclick="resetScriptUrl()">เปลี่ยน URL</span>
   </div>
 
   <div class="card">
     <div class="card-title">ข้อมูลทั่วไป</div>
     <div class="form-grid">
       <div class="fg">
-        <label>วันที่เปลี่ยน *</label>
+        <label>Date Change *</label>
         <input type="date" id="f-date"/>
       </div>
       <div class="fg">
-        <label>ตัวเลข SMU</label>
+        <label>SMU Equipment</label>
         <input type="number" id="f-smu" placeholder="เช่น 53661"/>
       </div>
       <div class="fg">
@@ -236,7 +244,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div class="fg">
-        <label>Type ลูกกลิ้ง *</label>
+        <label>Type Roller *</label>
         <select id="f-type">
           <option value="">— เลือก Type —</option>
           <option>Impact</option><option>Carry</option>
@@ -246,7 +254,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div class="fg">
-        <label>พื้นที่ (ไลน์) *</label>
+        <label>Location *</label>
         <select id="f-area">
           <option value="">— เลือกพื้นที่ —</option>
           <optgroup label="Line S"><option>S1</option><option>S2A</option><option>S2B</option><option>S2C</option><option>S2</option><option>S3</option><option>S4</option><option>S5</option></optgroup>
@@ -256,23 +264,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div class="fg">
-        <label>เลขโต๊ะ</label>
+        <label>Table No.</label>
         <input type="text" id="f-table" placeholder="เช่น 5 หรือ -"/>
       </div>
       <div class="fg">
-        <label>เลขพวง</label>
+        <label>Garland No.</label>
         <input type="number" id="f-group" placeholder="เช่น 1" min="1"/>
       </div>
       <div class="fg">
-        <label>เลขลูกกลิ้ง</label>
+        <label>Roller No.</label>
         <input type="number" id="f-roller" placeholder="ถ้ามี" min="1"/>
       </div>
       <div class="fg">
         <label>ชื่อผู้เปลี่ยน</label>
         <select id="f-tech">
-          <option value="">— เลือกช่าง —</option>
+          <option value="">— เลือกชื่อผู้เปลี่ยน —</option>
           <option>ท้าวอุดม</option><option>ท้าวกองสี</option><option>ท้าวนก</option>
+          <option>ท้าวฮวง</option><option>ท้าวสุลิน</option><option>ท้าวปิม</option><option>ท้าวสักน้อย</option>
           <option>นายจำลอง</option><option>นายนรินทร์</option><option>นายสงกรานต์</option><option>นายศราวุธ</option>
+          <option>นายสมชาย</option><option>นายชาญประสิทธิ์</option><option>นายพีรวิชญ์</option><option>นายเพชร</option>
         </select>
       </div>
     </div>
@@ -314,16 +324,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="saveLocal()">
+      <button class="btn btn-primary" id="save-btn" onclick="submitRecord()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-        บันทึก (Local)
+        บันทึกลง Google Sheets
       </button>
       <button class="btn" onclick="clearForm()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.46"/></svg>
         ล้างฟอร์ม
       </button>
     </div>
-    <div class="prev-box" id="prev-box"></div>
+
+    <!-- STATUS BOX -->
+    <div id="status-box" style="display:none;margin-top:1rem;border-radius:8px;padding:.875rem 1rem;font-size:13px;line-height:1.6;border:1px solid"></div>
   </div>
 
   <!-- Code Reference -->
@@ -463,8 +475,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 <div class="toast" id="toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
 
 <script>
-// ─── CONFIG — แก้ SHEET_ID ให้ตรงกับ Google Sheets ของคุณ ───
-const SHEET_ID  = '1ldhsqOTwWPTjUZ4O4e2jZqntQrvf2kSXVy1YLFU-1t8';
+// ─── CONFIG ───────────────────────────────────────────────────
+const SHEET_ID   = '1ldhsqOTwWPTjUZ4O4e2jZqntQrvf2kSXVy1YLFU-1t8';
+const SCRIPT_KEY = 'roller_script_url';
+const LOCAL_KEY  = 'roller_local_v2';
+const CSV_URL    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+
+let SCRIPT_URL = localStorage.getItem(SCRIPT_KEY) || '';
 const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 const LOCAL_KEY = 'roller_local_v2';
 
@@ -483,6 +500,7 @@ document.getElementById('r-month').value = new Date().getMonth() + 1;
 document.getElementById('r-year').value  = new Date().getFullYear();
 
 localData = loadLocal();
+initScriptUI();
 fetchSheetData();
 
 // ─── GOOGLE SHEETS CSV ────────────────────────────────────────
@@ -560,46 +578,156 @@ function mergeData() {
   fa.innerHTML = '<option value="">ทุกพื้นที่</option>' + areas.map(a=>`<option ${a===cur?'selected':''}>${a}</option>`).join('');
 }
 
-// ─── LOCAL STORAGE ────────────────────────────────────────────
+// ─── SCRIPT URL SETUP ────────────────────────────────────────
+function initScriptUI() {
+  if (SCRIPT_URL) {
+    document.getElementById('script-notice').style.display = 'none';
+    document.getElementById('script-ok').style.display = 'block';
+    document.getElementById('script-url-display').textContent = SCRIPT_URL.substring(0, 60) + '…';
+  } else {
+    document.getElementById('script-notice').style.display = 'block';
+    document.getElementById('script-ok').style.display = 'none';
+  }
+}
+function saveScriptUrl() {
+  const val = document.getElementById('script-url-input').value.trim();
+  if (!val.startsWith('https://script.google.com')) {
+    showStatus('❌ URL ไม่ถูกต้อง ต้องขึ้นต้นด้วย https://script.google.com', 'err'); return;
+  }
+  SCRIPT_URL = val;
+  localStorage.setItem(SCRIPT_KEY, val);
+  initScriptUI();
+  showStatus('✓ บันทึก URL แล้ว พร้อมบันทึกลง Google Sheets', 'ok');
+}
+function resetScriptUrl() {
+  SCRIPT_URL = '';
+  localStorage.removeItem(SCRIPT_KEY);
+  document.getElementById('script-url-input').value = '';
+  initScriptUI();
+}
+
+// ─── LOCAL STORAGE (fallback) ─────────────────────────────────
 function loadLocal() {
   try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch(e) { return []; }
 }
-function saveLocal() {
+function persistLocal() {
   try { localStorage.setItem(LOCAL_KEY, JSON.stringify(localData)); } catch(e) {}
 }
 
-// ─── FORM ─────────────────────────────────────────────────────
-function saveLocalRecord() {
+// ─── STATUS BOX ───────────────────────────────────────────────
+function showStatus(msg, type) {
+  // type: 'ok' | 'err' | 'loading'
+  const box = document.getElementById('status-box');
+  box.style.display = 'block';
+  if (type === 'ok') {
+    box.style.background = 'rgba(46,204,113,.07)';
+    box.style.borderColor = 'rgba(46,204,113,.25)';
+    box.style.color = '#4ade80';
+  } else if (type === 'err') {
+    box.style.background = 'rgba(239,68,68,.07)';
+    box.style.borderColor = 'rgba(239,68,68,.25)';
+    box.style.color = '#f87171';
+  } else {
+    box.style.background = 'rgba(61,142,240,.07)';
+    box.style.borderColor = 'rgba(61,142,240,.2)';
+    box.style.color = '#60a5fa';
+  }
+  box.innerHTML = msg;
+}
+
+// ─── FORM SUBMIT ──────────────────────────────────────────────
+async function submitRecord() {
   const date = document.getElementById('f-date').value;
   const type = document.getElementById('f-type').value;
   const area = document.getElementById('f-area').value;
-  if (!date || !type || !area) { toast('กรุณากรอก วันที่, Type และพื้นที่', false); return; }
+  if (!date || !type || !area) {
+    showStatus('❌ กรุณากรอกข้อมูลที่จำเป็น: Date Change, Type Roller และ Location', 'err');
+    return;
+  }
+
   const rec = {
-    _source: 'local',
-    _lid: Date.now().toString(),
     date, type, area,
-    smu  : document.getElementById('f-smu').value,
-    bw   : document.getElementById('f-bw').value,
-    table: document.getElementById('f-table').value || '-',
-    group: document.getElementById('f-group').value,
-    roller:document.getElementById('f-roller').value,
-    tech : document.getElementById('f-tech').value,
-    cause: document.getElementById('f-cause').value,
-    fix  : document.getElementById('f-fix').value,
-    note : document.getElementById('f-note').value,
+    smu   : document.getElementById('f-smu').value,
+    bw    : document.getElementById('f-bw').value,
+    table : document.getElementById('f-table').value || '-',
+    group : document.getElementById('f-group').value,
+    roller: document.getElementById('f-roller').value,
+    tech  : document.getElementById('f-tech').value,
+    cause : document.getElementById('f-cause').value,
+    fix   : document.getElementById('f-fix').value,
+    note  : document.getElementById('f-note').value,
   };
-  localData.push(rec);
-  saveLocal();
-  mergeData();
-  const box = document.getElementById('prev-box');
-  box.style.display = 'block';
-  box.innerHTML = `<strong>บันทึกแล้ว (Local)</strong> &nbsp;·&nbsp; ${rec.date} &nbsp;·&nbsp; <strong>${rec.type}</strong> &nbsp;·&nbsp; ${rec.area} พวง ${rec.group||'-'} &nbsp;·&nbsp; ${rec.cause||'-'} → ${rec.fix||'-'}`;
-  clearForm();
-  toast('บันทึกสำเร็จ (Local Storage)');
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> กำลังบันทึก...`;
+  showStatus('⏳ กำลังบันทึกลง Google Sheets...', 'loading');
+
+  if (!SCRIPT_URL) {
+    // fallback: บันทึก Local
+    rec._source = 'local';
+    rec._lid = Date.now().toString();
+    localData.push(rec);
+    persistLocal();
+    mergeData();
+    showStatus(
+      `⚠️ <strong>บันทึกใน Local Storage แทน</strong> (ยังไม่ได้ตั้งค่า Apps Script URL)<br>` +
+      `📅 ${rec.date} &nbsp;|&nbsp; 🔧 ${rec.type} &nbsp;|&nbsp; 📍 ${rec.area} พวง ${rec.group||'-'} ลูก ${rec.roller||'-'}<br>` +
+      `สาเหตุ: ${rec.cause||'-'} &nbsp;→&nbsp; แก้ไข: ${rec.fix||'-'} &nbsp;|&nbsp; ช่าง: ${rec.tech||'-'}`,
+      'err'
+    );
+    toast('บันทึก Local แล้ว (ไม่มี Script URL)', false);
+    resetBtn();
+    clearForm();
+    return;
+  }
+
+  // ส่งไป Google Sheets ผ่าน Apps Script
+  try {
+    const params = new URLSearchParams({ action: 'append', ...rec });
+    const res = await fetch(SCRIPT_URL + '?' + params.toString(), { method: 'GET' });
+    const json = await res.json();
+
+    if (json.ok) {
+      showStatus(
+        `✅ <strong>บันทึกลง Google Sheets สำเร็จ!</strong><br>` +
+        `📅 ${rec.date} &nbsp;|&nbsp; 🔧 ${rec.type} &nbsp;|&nbsp; 📍 ${rec.area} พวง ${rec.group||'-'} ลูก ${rec.roller||'-'}<br>` +
+        `สาเหตุ: <strong>${rec.cause||'-'}</strong> &nbsp;→&nbsp; แก้ไข: <strong>${rec.fix||'-'}</strong> &nbsp;|&nbsp; ช่าง: ${rec.tech||'-'}`,
+        'ok'
+      );
+      toast('✓ บันทึกลง Google Sheets สำเร็จ!');
+      clearForm();
+      // รีเฟรชข้อมูลหลังบันทึก
+      setTimeout(() => fetchSheetData(), 1500);
+    } else {
+      throw new Error(json.error || 'Apps Script ตอบ error');
+    }
+  } catch(e) {
+    // fallback: บันทึก Local ถ้า Sheets ล้มเหลว
+    rec._source = 'local';
+    rec._lid = Date.now().toString();
+    localData.push(rec);
+    persistLocal();
+    mergeData();
+    showStatus(
+      `⚠️ <strong>บันทึกลง Sheets ไม่สำเร็จ — บันทึก Local แทนชั่วคราว</strong><br>` +
+      `สาเหตุ: ${e.message}<br>` +
+      `📅 ${rec.date} &nbsp;|&nbsp; 🔧 ${rec.type} &nbsp;|&nbsp; 📍 ${rec.area}<br>` +
+      `<span style="font-size:11px;opacity:.7">ข้อมูลจะแสดงในตาราง กด รีเฟรช หลังแก้ไข URL</span>`,
+      'err'
+    );
+    toast('บันทึก Local แทน (Sheets error)', false);
+    clearForm();
+  }
+
+  resetBtn();
 }
 
-// alias ให้ปุ่ม
-function saveLocal() { saveLocalRecord(); }
+function resetBtn() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = false;
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> บันทึกลง Google Sheets`;
+}
 
 function clearForm() {
   ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note']
