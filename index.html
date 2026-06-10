@@ -76,6 +76,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .btn-green:hover{background:#14532d}
 .btn-red{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#f87171}
 .btn-red:hover{background:rgba(239,68,68,.25)}
+.btn-print{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.4);color:#a78bfa}
+.btn-print:hover{background:rgba(139,92,246,.25)}
 .btn svg{width:14px;height:14px;flex-shrink:0}
 
 /* METRICS */
@@ -164,12 +166,167 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
 
+/* ============================================================
+   PRINT REPORT PAGE
+   ============================================================ */
+.print-preview-frame {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.print-preview-label {
+  font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:1rem;display:flex;align-items:center;gap:6px;
+}
+.print-preview-label::before{content:'';width:3px;height:12px;background:#a78bfa;border-radius:2px}
+
+/* ── PRINT DOCUMENT ── */
+#print-doc {
+  background: #fff;
+  color: #1a1a2e;
+  font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  padding: 28px 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.08);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* doc header */
+.doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #1e3a8a;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+.doc-logo-block { display:flex;flex-direction:column;gap:2px;align-items:flex-start;background:#fff }
+.doc-logo-img { height:60px;width:auto;object-fit:contain;background:#ffffff;display:block;margin-left:-4px;border:none }
+.doc-logo { font-size:18pt;font-weight:700;color:#1e3a8a;letter-spacing:.04em;line-height:1 }
+.doc-subtitle { font-size:9pt;color:#64748b;letter-spacing:.06em }
+.doc-meta { text-align:right;font-size:9pt;color:#64748b;line-height:1.8 }
+.doc-meta strong { color:#1a1a2e;font-size:10pt }
+.doc-title-row {
+  background: #1e3a8a;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.doc-title-row h2 { font-size:13pt;font-weight:700;letter-spacing:.02em;margin:0 }
+.doc-title-row span { font-size:10pt;opacity:.8 }
+
+/* metric strip */
+.doc-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.doc-metric {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.doc-metric::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background: var(--dm-color,#1e3a8a);
+}
+.doc-metric-label { font-size:8pt;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px }
+.doc-metric-value { font-size:20pt;font-weight:700;color:#1a1a2e;line-height:1 }
+.doc-metric-pct { font-size:8pt;color:#64748b;margin-top:2px }
+
+/* section titles */
+.doc-section-title {
+  font-size:9pt;font-weight:700;color:#1e3a8a;text-transform:uppercase;
+  letter-spacing:.08em;padding:4px 0;border-bottom:1px solid #cbd5e1;
+  margin:14px 0 10px;
+}
+
+/* tables */
+.doc-table { width:100%;border-collapse:collapse;font-size:9.5pt }
+.doc-table th {
+  background:#f1f5f9;color:#334155;font-size:8.5pt;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+  padding:6px 10px;border:1px solid #e2e8f0;text-align:left;
+}
+.doc-table td { padding:5px 10px;border:1px solid #e2e8f0;color:#374151;vertical-align:middle }
+.doc-table tbody tr:nth-child(even) td { background:#f8fafc }
+.doc-table td.r { text-align:right;font-family:var(--mono) }
+.doc-table td.c { text-align:center;font-family:var(--mono) }
+.doc-table tfoot td { background:#f1f5f9;font-weight:700;border-top:2px solid #94a3b8 }
+
+/* horizontal bars in doc */
+.doc-bar-wrap { display:flex;align-items:center;gap:8px;height:100% }
+.doc-bar { height:8px;border-radius:3px;background:#3d8ef0;min-width:2px }
+.doc-bar-val { font-size:8.5pt;color:#64748b;white-space:nowrap;font-family:var(--mono) }
+
+/* 2-col layout */
+.doc-2col { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px }
+.doc-1col { margin-bottom:14px }
+
+/* area bars */
+.area-bar-row { display:flex;gap:6px;align-items:center;margin-bottom:5px }
+.area-bar-label { font-size:8.5pt;color:#374151;width:52px;flex-shrink:0;font-weight:500 }
+.area-bar-track { flex:1;background:#f1f5f9;border-radius:3px;height:10px;overflow:hidden }
+.area-bar-fill { height:10px;border-radius:3px;background:#3d8ef0;min-width:2px }
+.area-bar-num { font-size:8.5pt;color:#64748b;width:28px;text-align:right;font-family:var(--mono);flex-shrink:0 }
+
+/* cause pill in doc */
+.doc-cause { display:inline-block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:1px 6px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
+.doc-fix { display:inline-block;background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc;padding:1px 6px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
+.doc-type-badge { display:inline-block;padding:1px 7px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
+.dt-impact { background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe }
+.dt-carry { background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0 }
+.dt-return { background:#fffbeb;color:#b45309;border:1px solid #fde68a }
+.dt-flat { background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe }
+.dt-other { background:#f8fafc;color:#475569;border:1px solid #e2e8f0 }
+
+/* matrix */
+.doc-matrix-hdr { background:#1e3a8a !important;color:#fff !important }
+
+/* footer */
+.doc-footer {
+  margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:8pt;color:#94a3b8;
+}
+.doc-footer strong { color:#334155 }
+
+/* top-10 detail table */
+.detail-note { font-size:8pt;color:#94a3b8;font-style:italic;margin-top:4px }
+
+/* ── PRINT MEDIA ── */
+@media print {
+  body { background:#fff !important }
+  .topbar,.main > *:not(#page-print) { display:none !important }
+  #page-print { display:block !important }
+  .print-preview-frame { border:none !important;padding:0 !important;border-radius:0 !important }
+  .print-preview-label,.print-toolbar { display:none !important }
+  #print-doc { border:none !important;padding:0 !important;max-width:100% !important;box-shadow:none !important }
+  @page { size: A4; margin: 14mm 12mm }
+  .doc-2col { break-inside: avoid }
+  .doc-table { break-inside: auto }
+  .doc-table tr { break-inside: avoid }
+}
+
 @media(max-width:768px){
   .form-grid{grid-template-columns:1fr 1fr}
   .metrics{grid-template-columns:1fr 1fr}
   .chart-grid{grid-template-columns:1fr}
   .chart-card.wide{grid-column:1}
   .nav-tab span{display:none}
+  .doc-metrics{grid-template-columns:1fr 1fr}
+  .doc-2col{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -189,6 +346,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="nav-tab" onclick="showPage('report')" id="nav-report">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18h3v-7H3zM10 18h3V5h-3zM17 18h3v-4h-3z"/></svg>
       <span>สรุปประจำเดือน</span>
+    </div>
+    <div class="nav-tab" onclick="showPage('print')" id="nav-print">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      <span>พิมพ์รายงาน</span>
     </div>
   </nav>
   <div class="topbar-right">
@@ -333,12 +494,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         ล้างฟอร์ม
       </button>
     </div>
-
-    <!-- STATUS BOX -->
     <div id="status-box" style="display:none;margin-top:1rem;border-radius:8px;padding:.875rem 1rem;font-size:13px;line-height:1.6;border:1px solid"></div>
   </div>
 
-  <!-- Code Reference -->
   <div class="card" style="border-color:rgba(139,92,246,.2)">
     <div class="card-title" style="color:#a78bfa">คู่มือรหัส</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
@@ -466,6 +624,76 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
       <tbody id="matrix-body"></tbody>
     </table>
   </div>
+
+  <div class="btn-row" style="margin-top:.5rem">
+    <button class="btn btn-print" onclick="goToPrint()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      ไปหน้าพิมพ์รายงาน
+    </button>
+  </div>
+</div>
+
+<!-- ===== PRINT ===== -->
+<div class="page" id="page-print">
+  <div class="page-header">
+    <h1>พิมพ์รายงานประจำเดือน</h1>
+    <p>ตรวจสอบข้อมูลก่อนพิมพ์ · รองรับ A4</p>
+  </div>
+
+  <!-- PRINT TOOLBAR -->
+  <div class="print-preview-frame" style="padding:1rem">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap" class="print-toolbar">
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">เดือน</label>
+        <select id="pr-month" onchange="buildPrintDoc()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none">
+          <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+          <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+          <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+          <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+          <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+          <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">ปี</label>
+        <select id="pr-year" onchange="buildPrintDoc()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none">
+          <option value="2026">2026</option><option value="2025">2025</option>
+          <option value="2024">2024</option><option value="2023">2023</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">จัดทำโดย</label>
+        <input type="text" id="pr-author" value="ฝ่ายซ่อมบำรุง" onchange="buildPrintDoc()"
+          style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none;width:180px"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">ผู้อนุมัติ</label>
+        <input type="text" id="pr-approver" value="" placeholder="ชื่อผู้อนุมัติ" onchange="buildPrintDoc()"
+          style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none;width:180px"/>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+          <input type="checkbox" id="pr-show-detail" onchange="buildPrintDoc()" checked style="accent-color:var(--accent)"/>
+          แสดงตารางรายการ
+        </label>
+        <button class="btn btn-print" onclick="doPrint()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          พิมพ์ / บันทึก PDF
+        </button>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:.6rem;padding-left:2px">
+      💡 กด <strong style="color:var(--text2)">พิมพ์ / บันทึก PDF</strong> แล้วเลือก "Save as PDF" ใน dialog เพื่อส่งออกเป็นไฟล์
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="print-preview-frame">
+    <div class="print-preview-label">ตัวอย่างก่อนพิมพ์</div>
+    <div id="print-doc">
+      <div style="text-align:center;padding:2rem;color:#94a3b8;font-size:12pt">กำลังสร้างรายงาน...</div>
+    </div>
+  </div>
 </div>
 
 </main>
@@ -473,7 +701,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 <div class="toast" id="toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────
+// ─── CONFIG ──────────────────────────────────────────────────
 const SHEET_ID   = '1ldhsqOTwWPTjUZ4O4e2jZqntQrvf2kSXVy1YLFU-1t8';
 const SCRIPT_KEY = 'roller_script_url';
 const LOCAL_KEY  = 'roller_local_v2';
@@ -486,14 +714,16 @@ const MONTH_SHORT = {'ม.ค.':1,'ก.พ.':2,'มี.ค.':3,'เม.ย.':4,'
 const TYPE_COLORS = {'Impact':'#3d8ef0','Carry':'#2ecc71','Return เหล็ก':'#f59e0b','Return ยาง':'#e67e22','Flat Return':'#8b5cf6','default':'#64748b'};
 const CAUSE_COLORS = {'BR-D':'#ef4444','LC':'#f59e0b','LO':'#e67e22','NI':'#8b5cf6','SH':'#ec4899','LI-D':'#3d8ef0','BO-D':'#2ecc71','BL-D':'#06b6d4','Shaft':'#64748b'};
 
-let sheetData = [];   // จาก Google Sheets
-let localData = [];   // จาก localStorage
-let allData   = [];   // รวม
+let sheetData = [];
+let localData = [];
+let allData   = [];
 
 // ─── INIT ─────────────────────────────────────────────────────
 document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 document.getElementById('r-month').value = new Date().getMonth() + 1;
 document.getElementById('r-year').value  = new Date().getFullYear();
+document.getElementById('pr-month').value = new Date().getMonth() + 1;
+document.getElementById('pr-year').value  = new Date().getFullYear();
 
 localData = loadLocal();
 initScriptUI();
@@ -512,7 +742,7 @@ async function fetchSheetData() {
     toast('โหลด Google Sheets สำเร็จ · ' + sheetData.length + ' รายการ');
   } catch(e) {
     setDot('err');
-    toast('ไม่สามารถดึง Google Sheets: ' + e.message + ' · ใช้ข้อมูล Local แทน', false);
+    toast('ไม่สามารถดึง Google Sheets: ' + e.message, false);
     sheetData = [];
   }
   mergeData();
@@ -534,7 +764,6 @@ function parseCSV(csv) {
     const vals = splitCSVLine(lines[i]);
     const obj = { _source: 'sheet' };
     headers.forEach((h, j) => { obj[h] = (vals[j] || '').trim(); });
-    // รองรับทั้ง header ไทยและอังกฤษ
     obj.date  = obj.date  || obj['วันที่'] || obj['วันที่เปลี่ยน'] || '';
     obj.type  = obj.type  || obj['ประเภท'] || obj['type ลูกกลิ้ง'] || '';
     obj.smu   = obj.smu   || obj['smu'] || '';
@@ -567,14 +796,13 @@ function splitCSVLine(line) {
 function mergeData() {
   allData = [...sheetData, ...localData];
   document.getElementById('total-count').textContent = allData.length.toLocaleString();
-  // populate area filter
   const areas = [...new Set(allData.map(r => r.area).filter(Boolean))].sort();
   const fa = document.getElementById('filter-area');
   const cur = fa.value;
   fa.innerHTML = '<option value="">ทุกพื้นที่</option>' + areas.map(a=>`<option ${a===cur?'selected':''}>${a}</option>`).join('');
 }
 
-// ─── SCRIPT URL SETUP ────────────────────────────────────────
+// ─── SCRIPT URL ───────────────────────────────────────────────
 function initScriptUI() {
   if (SCRIPT_URL) {
     document.getElementById('script-notice').style.display = 'none';
@@ -588,12 +816,12 @@ function initScriptUI() {
 function saveScriptUrl() {
   const val = document.getElementById('script-url-input').value.trim();
   if (!val.startsWith('https://script.google.com')) {
-    showStatus('❌ URL ไม่ถูกต้อง ต้องขึ้นต้นด้วย https://script.google.com', 'err'); return;
+    showStatus('❌ URL ไม่ถูกต้อง', 'err'); return;
   }
   SCRIPT_URL = val;
   localStorage.setItem(SCRIPT_KEY, val);
   initScriptUI();
-  showStatus('✓ บันทึก URL แล้ว พร้อมบันทึกลง Google Sheets', 'ok');
+  showStatus('✓ บันทึก URL แล้ว', 'ok');
 }
 function resetScriptUrl() {
   SCRIPT_URL = '';
@@ -602,7 +830,7 @@ function resetScriptUrl() {
   initScriptUI();
 }
 
-// ─── LOCAL STORAGE (fallback) ─────────────────────────────────
+// ─── LOCAL STORAGE ────────────────────────────────────────────
 function loadLocal() {
   try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '[]'); } catch(e) { return []; }
 }
@@ -612,7 +840,6 @@ function persistLocal() {
 
 // ─── STATUS BOX ───────────────────────────────────────────────
 function showStatus(msg, type) {
-  // type: 'ok' | 'err' | 'loading'
   const box = document.getElementById('status-box');
   box.style.display = 'block';
   if (type === 'ok') {
@@ -640,7 +867,6 @@ async function submitRecord() {
     showStatus('❌ กรุณากรอกข้อมูลที่จำเป็น: Date Change, Type Roller และ Location', 'err');
     return;
   }
-
   const rec = {
     date, type, area,
     smu   : document.getElementById('f-smu').value,
@@ -657,65 +883,33 @@ async function submitRecord() {
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> กำลังบันทึก...`;
-  showStatus('⏳ กำลังบันทึกลง Google Sheets...', 'loading');
+  showStatus('⏳ กำลังบันทึก...', 'loading');
 
   if (!SCRIPT_URL) {
-    // fallback: บันทึก Local
-    rec._source = 'local';
-    rec._lid = Date.now().toString();
-    localData.push(rec);
-    persistLocal();
-    mergeData();
-    showStatus(
-      `⚠️ <strong>บันทึกใน Local Storage แทน</strong> (ยังไม่ได้ตั้งค่า Apps Script URL)<br>` +
-      `📅 ${rec.date} &nbsp;|&nbsp; 🔧 ${rec.type} &nbsp;|&nbsp; 📍 ${rec.area} พวง ${rec.group||'-'} ลูก ${rec.roller||'-'}<br>` +
-      `สาเหตุ: ${rec.cause||'-'} &nbsp;→&nbsp; แก้ไข: ${rec.fix||'-'} &nbsp;|&nbsp; ช่าง: ${rec.tech||'-'}`,
-      'err'
-    );
-    toast('บันทึก Local แล้ว (ไม่มี Script URL)', false);
-    resetBtn();
-    clearForm();
-    return;
+    rec._source = 'local'; rec._lid = Date.now().toString();
+    localData.push(rec); persistLocal(); mergeData();
+    showStatus(`⚠️ <strong>บันทึกใน Local Storage</strong> (ยังไม่ได้ตั้งค่า Script URL)<br>📅 ${rec.date} | 🔧 ${rec.type} | 📍 ${rec.area}`, 'err');
+    toast('บันทึก Local แล้ว', false);
+    resetBtn(); clearForm(); return;
   }
 
-  // ส่งไป Google Sheets ผ่าน Apps Script
   try {
     const params = new URLSearchParams({ action: 'append', ...rec });
     const res = await fetch(SCRIPT_URL + '?' + params.toString(), { method: 'GET' });
     const json = await res.json();
-
     if (json.ok) {
-      showStatus(
-        `✅ <strong>บันทึกลง Google Sheets สำเร็จ!</strong><br>` +
-        `📅 ${rec.date} &nbsp;|&nbsp; 🔧 ${rec.type} &nbsp;|&nbsp; 📍 ${rec.area} พวง ${rec.group||'-'} ลูก ${rec.roller||'-'}<br>` +
-        `สาเหตุ: <strong>${rec.cause||'-'}</strong> &nbsp;→&nbsp; แก้ไข: <strong>${rec.fix||'-'}</strong> &nbsp;|&nbsp; ช่าง: ${rec.tech||'-'}`,
-        'ok'
-      );
+      showStatus(`✅ <strong>บันทึกลง Google Sheets สำเร็จ!</strong><br>📅 ${rec.date} | 🔧 ${rec.type} | 📍 ${rec.area} พวง ${rec.group||'-'} ลูก ${rec.roller||'-'}<br>สาเหตุ: <strong>${rec.cause||'-'}</strong> → แก้ไข: <strong>${rec.fix||'-'}</strong> | ช่าง: ${rec.tech||'-'}`, 'ok');
       toast('✓ บันทึกลง Google Sheets สำเร็จ!');
       clearForm();
-      // รีเฟรชข้อมูลหลังบันทึก
       setTimeout(() => fetchSheetData(), 1500);
-    } else {
-      throw new Error(json.error || 'Apps Script ตอบ error');
-    }
+    } else { throw new Error(json.error || 'Apps Script error'); }
   } catch(e) {
-    // fallback: บันทึก Local ถ้า Sheets ล้มเหลว
-    rec._source = 'local';
-    rec._lid = Date.now().toString();
-    localData.push(rec);
-    persistLocal();
-    mergeData();
-    showStatus(
-      `⚠️ <strong>บันทึกลง Sheets ไม่สำเร็จ — บันทึก Local แทนชั่วคราว</strong><br>` +
-      `สาเหตุ: ${e.message}<br>` +
-      `📅 ${rec.date} &nbsp;|&nbsp; 🔧 ${rec.type} &nbsp;|&nbsp; 📍 ${rec.area}<br>` +
-      `<span style="font-size:11px;opacity:.7">ข้อมูลจะแสดงในตาราง กด รีเฟรช หลังแก้ไข URL</span>`,
-      'err'
-    );
-    toast('บันทึก Local แทน (Sheets error)', false);
+    rec._source = 'local'; rec._lid = Date.now().toString();
+    localData.push(rec); persistLocal(); mergeData();
+    showStatus(`⚠️ <strong>Sheets ล้มเหลว — บันทึก Local แทน</strong><br>สาเหตุ: ${e.message}`, 'err');
+    toast('บันทึก Local แทน', false);
     clearForm();
   }
-
   resetBtn();
 }
 
@@ -727,10 +921,7 @@ function resetBtn() {
 
 function clearForm() {
   ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note']
-    .forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 }
 
@@ -742,6 +933,14 @@ function showPage(name) {
   document.getElementById('nav-'+name).classList.add('active');
   if (name === 'data')   renderTable();
   if (name === 'report') renderReport();
+  if (name === 'print')  buildPrintDoc();
+}
+
+function goToPrint() {
+  // sync month/year from report page
+  document.getElementById('pr-month').value = document.getElementById('r-month').value;
+  document.getElementById('pr-year').value  = document.getElementById('r-year').value;
+  showPage('print');
 }
 
 // ─── TABLE ────────────────────────────────────────────────────
@@ -760,7 +959,7 @@ function renderTable() {
   if (fa) data = data.filter(r => r.area === fa);
   document.getElementById('filter-count').textContent = data.length.toLocaleString() + ' รายการ';
   const body = document.getElementById('table-body');
-  if (!data.length) { body.innerHTML = `<tr><td colspan="14" class="empty-td">ไม่มีข้อมูลที่ตรงกับเงื่อนไข</td></tr>`; return; }
+  if (!data.length) { body.innerHTML = `<tr><td colspan="14" class="empty-td">ไม่มีข้อมูล</td></tr>`; return; }
   body.innerHTML = data.slice(0, 500).map((r, i) => `<tr>
     <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${data.length - i}</td>
     <td style="white-space:nowrap;font-family:var(--mono);font-size:12px">${r.date||''}</td>
@@ -782,18 +981,13 @@ function renderTable() {
 function deleteLocal(lid) {
   if (!confirm('ลบรายการ Local นี้?')) return;
   localData = localData.filter(r => r._lid !== lid);
-  persistLocal();
-  mergeData();
-  renderTable();
-  toast('ลบแล้ว');
+  persistLocal(); mergeData(); renderTable(); toast('ลบแล้ว');
 }
 
 // ─── REPORT ───────────────────────────────────────────────────
 function getMonthNum(dateStr) {
   if (!dateStr) return null;
-  // รูปแบบ YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return parseInt(dateStr.split('-')[1]);
-  // รูปแบบ D-ม.ค.
   const parts = dateStr.split('-');
   if (parts.length >= 2) return MONTH_SHORT[parts[1]] || null;
   return null;
@@ -801,7 +995,7 @@ function getMonthNum(dateStr) {
 function getYearNum(dateStr) {
   if (!dateStr) return null;
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return parseInt(dateStr.split('-')[0]);
-  return new Date().getFullYear(); // ถ้าไม่มีปีให้ใช้ปีปัจจุบัน
+  return new Date().getFullYear();
 }
 
 function renderReport() {
@@ -837,7 +1031,6 @@ function renderReport() {
       <div class="metric-sub">${total?Math.round(brDmg/total*100):0}%</div>
     </div>`;
 
-  // Type donut (CSS-based)
   const typeCnt = {};
   data.forEach(r => { typeCnt[r.type] = (typeCnt[r.type]||0)+1; });
   const tEntries = Object.entries(typeCnt).sort((a,b)=>b[1]-a[1]);
@@ -852,22 +1045,18 @@ function renderReport() {
       </div>
     </div>`;
 
-  // Cause bar
   const causeCnt = {};
   data.forEach(r => { if(r.cause) causeCnt[r.cause] = (causeCnt[r.cause]||0)+1; });
   renderBarChart('chart-cause', Object.entries(causeCnt).sort((a,b)=>b[1]-a[1]), CAUSE_COLORS, '#64748b');
 
-  // Area bar
   const areaCnt = {};
   data.forEach(r => { if(r.area) areaCnt[r.area] = (areaCnt[r.area]||0)+1; });
   renderBarChart('chart-area', Object.entries(areaCnt).sort((a,b)=>b[1]-a[1]), {}, '#3d8ef0');
 
-  // Type table
   document.getElementById('type-body').innerHTML = tEntries.length
     ? tEntries.map(([k,v])=>`<tr><td>${typeBadge(k)}</td><td class="num">${v}</td><td class="num" style="color:var(--text3)">${total?Math.round(v/total*100):0}%</td></tr>`).join('')
     : '<tr><td colspan="3" class="empty-td">ไม่มีข้อมูล</td></tr>';
 
-  // Tech table
   const techMap = {};
   data.forEach(r => {
     if (!r.tech) return;
@@ -880,7 +1069,6 @@ function renderReport() {
     ? Object.entries(techMap).sort((a,b)=>b[1].t-a[1].t).map(([k,v])=>`<tr><td style="color:var(--text)">${k}</td><td class="num">${v.t}</td><td class="num" style="color:#60a5fa">${v.i}</td><td class="num" style="color:#4ade80">${v.c}</td></tr>`).join('')
     : '<tr><td colspan="4" class="empty-td">ไม่มีข้อมูล</td></tr>';
 
-  // Cause × Fix matrix
   const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
   const fixes  = ['BR-N','BR-O','LI','BO','BL','RE'];
   const mx = {};
@@ -923,9 +1111,9 @@ function renderBarChart(id, entries, colorMap, fallback) {
   }).join('');
 }
 
-// ─── EXPORT ───────────────────────────────────────────────────
+// ─── EXPORT CSV ───────────────────────────────────────────────
 function exportCSV() {
-  if (!allData.length) { toast('ไม่มีข้อมูลให้ส่งออก', false); return; }
+  if (!allData.length) { toast('ไม่มีข้อมูล', false); return; }
   const heads = ['date','type','smu','bw','area','table','group','roller','tech','cause','fix','note'];
   const esc = v => `"${(v||'').toString().replace(/"/g,'""')}"`;
   const csv = [heads.join(','), ...allData.map(r => heads.map(h=>esc(r[h])).join(','))].join('\n');
@@ -934,6 +1122,309 @@ function exportCSV() {
   a.download = `roller_${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
   toast('ดาวน์โหลด CSV แล้ว');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PRINT REPORT BUILDER
+// ═══════════════════════════════════════════════════════════════
+
+function docTypeBadge(t) {
+  const t2 = (t||'');
+  let cls = 'dt-other';
+  if (t2==='Impact') cls='dt-impact';
+  else if (t2==='Carry') cls='dt-carry';
+  else if (t2.startsWith('Return')) cls='dt-return';
+  else if (t2.startsWith('Flat')) cls='dt-flat';
+  return `<span class="doc-type-badge ${cls}">${t2||'—'}</span>`;
+}
+
+function buildPrintDoc() {
+  const month  = parseInt(document.getElementById('pr-month').value);
+  const year   = parseInt(document.getElementById('pr-year').value);
+  const author = document.getElementById('pr-author').value || 'ฝ่ายซ่อมบำรุง';
+  const approver = document.getElementById('pr-approver').value || '—';
+  const showDetail = document.getElementById('pr-show-detail').checked;
+
+  const data = allData.filter(r => getMonthNum(r.date) === month && getYearNum(r.date) === year);
+  const total = data.length;
+  const impact = data.filter(r => r.type === 'Impact').length;
+  const carry  = data.filter(r => r.type === 'Carry').length;
+  const ret    = data.filter(r => (r.type||'').startsWith('Return')).length;
+  const flatR  = data.filter(r => (r.type||'').startsWith('Flat')).length;
+  const brDmg  = data.filter(r => r.cause === 'BR-D').length;
+
+  // --- Type counts ---
+  const typeCnt = {};
+  data.forEach(r => { if(r.type) typeCnt[r.type] = (typeCnt[r.type]||0)+1; });
+  const tEntries = Object.entries(typeCnt).sort((a,b)=>b[1]-a[1]);
+
+  // --- Cause counts ---
+  const causeCnt = {};
+  data.forEach(r => { if(r.cause) causeCnt[r.cause] = (causeCnt[r.cause]||0)+1; });
+  const causeEntries = Object.entries(causeCnt).sort((a,b)=>b[1]-a[1]);
+
+  // --- Area counts ---
+  const areaCnt = {};
+  data.forEach(r => { if(r.area) areaCnt[r.area] = (areaCnt[r.area]||0)+1; });
+  const areaEntries = Object.entries(areaCnt).sort((a,b)=>b[1]-a[1]);
+  const areaMax = areaEntries.length ? areaEntries[0][1] : 1;
+
+  // --- Tech counts ---
+  const techMap = {};
+  data.forEach(r => {
+    if (!r.tech) return;
+    if (!techMap[r.tech]) techMap[r.tech]={t:0,i:0,c:0};
+    techMap[r.tech].t++;
+    if(r.type==='Impact') techMap[r.tech].i++;
+    if(r.type==='Carry')  techMap[r.tech].c++;
+  });
+  const techEntries = Object.entries(techMap).sort((a,b)=>b[1].t-a[1].t);
+
+  // --- Cause × Fix matrix ---
+  const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
+  const fixes  = ['BR-N','BR-O','LI','BO','BL','RE'];
+  const mx = {};
+  data.forEach(r => { if(!r.cause) return; if(!mx[r.cause]) mx[r.cause]={}; mx[r.cause][r.fix]=(mx[r.cause][r.fix]||0)+1; });
+
+  const today = new Date();
+  const printDate = `${today.getDate()} ${MONTHS_TH[today.getMonth()+1]} ${today.getFullYear()+543}`;
+
+  // ── build horizontal bar rows for areas ──
+  const areaBarHTML = areaEntries.map(([area, cnt]) => `
+    <div class="area-bar-row">
+      <span class="area-bar-label">${area}</span>
+      <div class="area-bar-track">
+        <div class="area-bar-fill" style="width:${Math.round(cnt/areaMax*100)}%"></div>
+      </div>
+      <span class="area-bar-num">${cnt}</span>
+    </div>`).join('') || '<div style="color:#94a3b8;font-size:9pt;padding:.5rem 0">ไม่มีข้อมูล</div>';
+
+  // ── type summary rows ──
+  const typeRowsHTML = tEntries.map(([k,v]) => `
+    <tr>
+      <td>${docTypeBadge(k)}</td>
+      <td class="r">${v}</td>
+      <td class="r">${total?Math.round(v/total*100):0}%</td>
+      <td>
+        <div class="doc-bar-wrap">
+          <div class="doc-bar" style="width:${total?Math.round(v/total*100)*1.4:0}px;background:${TYPE_COLORS[k]||'#64748b'}"></div>
+          <span class="doc-bar-val">${total?Math.round(v/total*100):0}%</span>
+        </div>
+      </td>
+    </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:#94a3b8;font-style:italic;padding:.75rem">ไม่มีข้อมูล</td></tr>`;
+
+  // ── cause rows ──
+  const causeRowsHTML = causeEntries.map(([k,v]) => `
+    <tr>
+      <td><span class="doc-cause">${k}</span></td>
+      <td class="r">${v}</td>
+      <td class="r">${total?Math.round(v/total*100):0}%</td>
+      <td>
+        <div class="doc-bar-wrap">
+          <div class="doc-bar" style="width:${total?Math.round(v/total*100)*1.4:0}px;background:#dc2626"></div>
+          <span class="doc-bar-val">${total?Math.round(v/total*100):0}%</span>
+        </div>
+      </td>
+    </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:#94a3b8;font-style:italic;padding:.75rem">ไม่มีข้อมูล</td></tr>`;
+
+  // ── tech rows ──
+  const techRowsHTML = techEntries.map(([k,v]) => `
+    <tr>
+      <td>${k}</td>
+      <td class="r">${v.t}</td>
+      <td class="r" style="color:#1d4ed8">${v.i}</td>
+      <td class="r" style="color:#15803d">${v.c}</td>
+    </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:#94a3b8;font-style:italic;padding:.75rem">ไม่มีข้อมูล</td></tr>`;
+
+  // ── matrix rows ──
+  const mxRowsHTML = causes.filter(c=>mx[c]).map(c => {
+    const row = mx[c], rt = Object.values(row).reduce((a,b)=>a+b,0);
+    return `<tr>
+      <td><span class="doc-cause">${c}</span></td>
+      ${fixes.map(f=>`<td class="c" style="color:${row[f]?'#374151':'#cbd5e1'}">${row[f]||'—'}</td>`).join('')}
+      <td class="r" style="font-weight:700;color:#1a1a2e">${rt}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="8" style="text-align:center;color:#94a3b8;font-style:italic;padding:.75rem">ไม่มีข้อมูล</td></tr>`;
+
+  // ── detail table (top 50) ──
+  const detailHTML = showDetail ? `
+    <div class="doc-section-title">รายการทั้งหมดในเดือนนี้ (${total} รายการ)</div>
+    <table class="doc-table" style="font-size:8.5pt">
+      <thead>
+        <tr>
+          <th style="width:28px">#</th>
+          <th style="width:76px">วันที่</th>
+          <th style="width:70px">ประเภท</th>
+          <th style="width:46px">พื้นที่</th>
+          <th style="width:30px">โต๊ะ</th>
+          <th style="width:30px">พวง</th>
+          <th style="width:30px">ลูก</th>
+          <th style="width:52px">สาเหตุ</th>
+          <th style="width:52px">แก้ไข</th>
+          <th>ช่าง</th>
+          <th>หมายเหตุ</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.slice(0,200).map((r,i)=>`
+        <tr>
+          <td class="c" style="color:#94a3b8">${i+1}</td>
+          <td style="white-space:nowrap;font-family:monospace;font-size:8pt">${r.date||''}</td>
+          <td>${docTypeBadge(r.type)}</td>
+          <td style="font-weight:600">${r.area||''}</td>
+          <td class="c">${r.table||''}</td>
+          <td class="c">${r.group||''}</td>
+          <td class="c">${r.roller||''}</td>
+          <td>${r.cause?`<span class="doc-cause">${r.cause}</span>`:''}</td>
+          <td>${r.fix?`<span class="doc-fix">${r.fix}</span>`:''}</td>
+          <td style="font-size:8pt">${r.tech||''}</td>
+          <td style="font-size:8pt;color:#64748b;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${r.note||''}</td>
+        </tr>`).join('')}
+      </tbody>
+      ${data.length > 200 ? `<tfoot><tr><td colspan="11" style="text-align:center;font-style:italic;color:#94a3b8;font-size:8pt">แสดงเฉพาะ 200 รายการแรก จากทั้งหมด ${total} รายการ</td></tr></tfoot>` : ''}
+    </table>
+    ${data.length > 200 ? `<p class="detail-note">* รายการที่เกิน 200 รายการไม่แสดงในหน้าพิมพ์ ส่งออก CSV เพื่อดูข้อมูลทั้งหมด</p>` : ''}
+  ` : '';
+
+  // ── signature block ──
+  const sigHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:24px">
+      <div style="text-align:center">
+        <div style="border-top:1px solid #94a3b8;margin-top:40px;padding-top:8px;font-size:8.5pt;color:#374151">
+          <div style="font-weight:600">${author}</div>
+          <div style="color:#64748b">ผู้จัดทำรายงาน</div>
+          <div style="color:#64748b;margin-top:4px">วันที่..................................</div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div style="border-top:1px solid #94a3b8;margin-top:40px;padding-top:8px;font-size:8.5pt;color:#374151">
+          <div style="font-weight:600">หัวหน้าแผนก</div>
+          <div style="color:#64748b">ผู้ตรวจสอบ</div>
+          <div style="color:#64748b;margin-top:4px">วันที่..................................</div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div style="border-top:1px solid #94a3b8;margin-top:40px;padding-top:8px;font-size:8.5pt;color:#374151">
+          <div style="font-weight:600">${approver}</div>
+          <div style="color:#64748b">ผู้อนุมัติ</div>
+          <div style="color:#64748b;margin-top:4px">วันที่..................................</div>
+        </div>
+      </div>
+    </div>`;
+
+  // ── assemble document ──
+  document.getElementById('print-doc').innerHTML = `
+    <!-- HEADER -->
+    <div class="doc-header">
+      <div class="doc-logo-block">
+        <img src="data:image/png;base64,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" alt="Italian Thai Hongsa" style="height:60px;width:auto;object-fit:contain;background:#fff;padding:4px;border-radius:4px;display:block"/>
+        <div class="doc-subtitle" style="margin-top:5px">BELT CONVEYOR MAINTENANCE SYSTEM</div>
+      </div>
+      <div class="doc-meta">
+        <div>เลขที่รายงาน: <strong>RPT-${year}-${String(month).padStart(2,'0')}</strong></div>
+        <div>ประเภทเอกสาร: <strong>รายงานประจำเดือน</strong></div>
+        <div>วันที่พิมพ์: <strong>${printDate}</strong></div>
+        <div>จัดทำโดย: <strong>${author}</strong></div>
+      </div>
+    </div>
+
+    <!-- TITLE BAR -->
+    <div class="doc-title-row">
+      <h2>รายงานการเปลี่ยนลูกกลิ้ง · เดือน${MONTHS_TH[month]} ${year}</h2>
+      <span>สรุปจำนวน ${total} รายการ</span>
+    </div>
+
+    <!-- METRICS -->
+    <div class="doc-metrics">
+      <div class="doc-metric" style="--dm-color:#1e3a8a">
+        <div class="doc-metric-label">รวมทั้งหมด</div>
+        <div class="doc-metric-value">${total}</div>
+        <div class="doc-metric-pct">รายการซ่อม</div>
+      </div>
+      <div class="doc-metric" style="--dm-color:#1d4ed8">
+        <div class="doc-metric-label">Impact</div>
+        <div class="doc-metric-value" style="color:#1d4ed8">${impact}</div>
+        <div class="doc-metric-pct">${total?Math.round(impact/total*100):0}% ของทั้งหมด</div>
+      </div>
+      <div class="doc-metric" style="--dm-color:#15803d">
+        <div class="doc-metric-label">Carry</div>
+        <div class="doc-metric-value" style="color:#15803d">${carry}</div>
+        <div class="doc-metric-pct">${total?Math.round(carry/total*100):0}% ของทั้งหมด</div>
+      </div>
+      <div class="doc-metric" style="--dm-color:#dc2626">
+        <div class="doc-metric-label">แบริ่งแตก (BR-D)</div>
+        <div class="doc-metric-value" style="color:#dc2626">${brDmg}</div>
+        <div class="doc-metric-pct">${total?Math.round(brDmg/total*100):0}% ของทั้งหมด</div>
+      </div>
+    </div>
+
+    <!-- 2 COL: Type + Cause -->
+    <div class="doc-2col">
+      <div>
+        <div class="doc-section-title">จำนวนตามประเภทลูกกลิ้ง</div>
+        <table class="doc-table">
+          <thead><tr><th>ประเภท</th><th style="text-align:right">จำนวน</th><th style="text-align:right">%</th><th style="width:120px">สัดส่วน</th></tr></thead>
+          <tbody>${typeRowsHTML}</tbody>
+          <tfoot><tr><td><strong>รวม</strong></td><td class="r">${total}</td><td class="r">100%</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <div>
+        <div class="doc-section-title">สาเหตุการเสีย</div>
+        <table class="doc-table">
+          <thead><tr><th>สาเหตุ</th><th style="text-align:right">จำนวน</th><th style="text-align:right">%</th><th style="width:120px">สัดส่วน</th></tr></thead>
+          <tbody>${causeRowsHTML}</tbody>
+          <tfoot><tr><td><strong>รวม</strong></td><td class="r">${data.filter(r=>r.cause).length}</td><td class="r">—</td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2 COL: Area + Tech -->
+    <div class="doc-2col">
+      <div>
+        <div class="doc-section-title">จำนวนซ่อมรายพื้นที่</div>
+        ${areaBarHTML}
+      </div>
+      <div>
+        <div class="doc-section-title">ผลงานรายช่าง</div>
+        <table class="doc-table">
+          <thead><tr><th>ชื่อช่าง</th><th style="text-align:right">รวม</th><th style="text-align:right">Impact</th><th style="text-align:right">Carry</th></tr></thead>
+          <tbody>${techRowsHTML}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MATRIX -->
+    <div class="doc-1col">
+      <div class="doc-section-title">ตารางวิเคราะห์ สาเหตุ × การแก้ไข (Cause × Fix Matrix)</div>
+      <table class="doc-table">
+        <thead>
+          <tr class="doc-matrix-hdr">
+            <th style="background:#1e3a8a;color:#fff">สาเหตุ ＼ แก้ไข</th>
+            ${fixes.map(f=>`<th style="background:#1e3a8a;color:#fff;text-align:center">${f}</th>`).join('')}
+            <th style="background:#1e3a8a;color:#fff;text-align:right">รวม</th>
+          </tr>
+        </thead>
+        <tbody>${mxRowsHTML}</tbody>
+      </table>
+    </div>
+
+    <!-- DETAIL TABLE -->
+    ${detailHTML}
+
+    <!-- SIGNATURE -->
+    ${sigHTML}
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+      <div><strong>BTT · Roller Tracking System</strong> &nbsp;|&nbsp; Belt Conveyor Maintenance</div>
+      <div>รายงานประจำเดือน${MONTHS_TH[month]} ${year} &nbsp;|&nbsp; พิมพ์วันที่ ${printDate}</div>
+    </div>
+  `;
+}
+
+function doPrint() {
+  buildPrintDoc();
+  setTimeout(() => window.print(), 150);
 }
 
 // ─── UI HELPERS ───────────────────────────────────────────────
