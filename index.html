@@ -282,6 +282,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .doc-table td.r { text-align:right;font-family:var(--mono) }
 .doc-table td.c { text-align:center;font-family:var(--mono) }
 .doc-table tfoot td { background:#f1f5f9;font-weight:700;border-top:2px solid #94a3b8 }
+/* type & cause tables share identical column widths so they line up */
+.tc-table { table-layout:fixed }
+.tc-table th:nth-child(2), .tc-table td:nth-child(2) { width:48px }
+.tc-table th:nth-child(3), .tc-table td:nth-child(3) { width:40px }
+.tc-table th:nth-child(4), .tc-table td:nth-child(4) { width:38% }
 
 /* horizontal bars in doc */
 .doc-bar-wrap { display:flex;align-items:center;gap:8px;height:100% }
@@ -1186,7 +1191,7 @@ function renderReport() {
     ? Object.entries(techMap).sort((a,b)=>b[1].t-a[1].t).map(([k,v])=>`<tr><td style="color:var(--text)">${k}</td><td class="num">${v.t}</td><td class="num" style="color:#60a5fa">${v.i}</td><td class="num" style="color:#4ade80">${v.c}</td></tr>`).join('')
     : '<tr><td colspan="4" class="empty-td">ไม่มีข้อมูล</td></tr>';
 
-  const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
+  const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D'];
   const fixes  = ['BR-N','BR-O','LI','BO','BL','RE'];
   const mx = {};
   data.forEach(r => { if(!r.cause) return; if(!mx[r.cause]) mx[r.cause]={}; mx[r.cause][r.fix]=(mx[r.cause][r.fix]||0)+1; });
@@ -1281,8 +1286,8 @@ function buildPrintDoc() {
   const causeCnt = {};
   data.forEach(r => { if(r.cause) causeCnt[r.cause] = (causeCnt[r.cause]||0)+1; });
   // always list every standard cause, even when the count is 0
-  const ALL_CAUSES = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
-  const causeKeys = [...new Set([...ALL_CAUSES, ...Object.keys(causeCnt)])];
+  const ALL_CAUSES = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D'];
+  const causeKeys = [...new Set([...ALL_CAUSES, ...Object.keys(causeCnt)])].filter(c => c !== 'Shaft');
   const causeEntries = causeKeys.map(c => [c, causeCnt[c] || 0]).sort((a,b)=>b[1]-a[1]);
 
   // --- Area counts ---
@@ -1303,7 +1308,7 @@ function buildPrintDoc() {
   const techEntries = Object.entries(techMap).sort((a,b)=>b[1].t-a[1].t);
 
   // --- Cause × Fix matrix ---
-  const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
+  const causes = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D'];
   const fixes  = ['BR-N','BR-O','LI','BO','BL','RE'];
   const mx = {};
   data.forEach(r => { if(!r.cause) return; if(!mx[r.cause]) mx[r.cause]={}; mx[r.cause][r.fix]=(mx[r.cause][r.fix]||0)+1; });
@@ -1469,16 +1474,16 @@ function buildPrintDoc() {
     <div class="doc-2col">
       <div>
         <div class="doc-section-title">จำนวนตามประเภทลูกกลิ้ง</div>
-        <table class="doc-table">
-          <thead><tr><th>ประเภท</th><th style="text-align:right">จำนวน</th><th style="text-align:right">%</th><th style="width:120px">สัดส่วน</th></tr></thead>
+        <table class="doc-table tc-table">
+          <thead><tr><th>ประเภท</th><th style="text-align:right">จำนวน</th><th style="text-align:right">%</th><th>สัดส่วน</th></tr></thead>
           <tbody>${typeRowsHTML}</tbody>
           <tfoot><tr><td><strong>รวม</strong></td><td class="r">${total}</td><td class="r">100%</td><td></td></tr></tfoot>
         </table>
       </div>
       <div>
         <div class="doc-section-title">สาเหตุการเสีย</div>
-        <table class="doc-table">
-          <thead><tr><th>สาเหตุ</th><th style="text-align:right">จำนวน</th><th style="text-align:right">%</th><th style="width:120px">สัดส่วน</th></tr></thead>
+        <table class="doc-table tc-table">
+          <thead><tr><th>สาเหตุ</th><th style="text-align:right">จำนวน</th><th style="text-align:right">%</th><th>สัดส่วน</th></tr></thead>
           <tbody>${causeRowsHTML}</tbody>
           <tfoot><tr><td><strong>รวม</strong></td><td class="r">${data.filter(r=>r.cause).length}</td><td class="r">—</td><td></td></tr></tfoot>
         </table>
