@@ -206,9 +206,19 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+/* report title: centered, black, blue divider line underneath */
+.doc-report-title {
+  text-align: center;
+  color: #000;
+  font-size: 13pt;
+  font-weight: 700;
+  letter-spacing: .02em;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
   border-bottom: 2px solid #1e3a8a;
-  padding-bottom: 7px;
-  margin-bottom: 9px;
 }
 .doc-logo-block { display:block;width:4.35cm;height:auto;background:#fff }
 .doc-logo-img { width:4.35cm;height:2.02cm;object-fit:fill;background:#ffffff;display:block;margin:0;border:none }
@@ -1286,11 +1296,8 @@ function buildPrintDoc() {
       </div>
     </div>
 
-    <!-- TITLE BAR -->
-    <div class="doc-title-row">
-      <h2>รายงานการเปลี่ยนลูกกลิ้ง · เดือน${MONTHS_TH[month]} ${year}</h2>
-      <span>สรุปจำนวน ${total} รายการ</span>
-    </div>
+    <!-- REPORT TITLE (centered, black, above the blue divider line) -->
+    <h2 class="doc-report-title">รายงานการเปลี่ยนลูกกลิ้ง · เดือน${MONTHS_TH[month]} ${year}</h2>
 
     <!-- METRICS -->
     <div class="doc-metrics">
