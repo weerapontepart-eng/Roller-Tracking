@@ -1373,21 +1373,24 @@ function buildPrintDoc() {
     monthTypeCounts.push(tc);
   }
   const monthCounts = monthTypeCounts.map(tc => Object.values(tc).reduce((a,b)=>a+b,0));
-  const monthMax = Math.max(...monthCounts, 1);
-  const yearShown = monthCounts.reduce((a,b)=>a+b,0);   // total of charted types only
+  // bars are only drawn up to the selected month; later months keep their label but no bar
+  const monthMax = Math.max(...monthCounts.slice(0, month), 1);   // scale bars to the visible range
+  const yearShown = monthCounts.reduce((a,b)=>a+b,0);
   const typeYearTotals = {};
   stackOrder.forEach(t => { typeYearTotals[t] = 0; });
   monthTypeCounts.forEach(tc => Object.entries(tc).forEach(([t,c]) => { typeYearTotals[t] += c; }));
   const yearBarMaxH = 140;
   const yearColsHTML = monthCounts.map((total, i) => {
-    const tc = monthTypeCounts[i];
-    const totalH = total > 0 ? Math.max(Math.round(total/monthMax*yearBarMaxH), 5) : 0;
+    const future = i > (month - 1);              // month after the selected one -> no bar
+    const t0 = future ? 0 : total;
+    const tc = future ? {} : monthTypeCounts[i];
+    const totalH = t0 > 0 ? Math.max(Math.round(t0/monthMax*yearBarMaxH), 5) : 0;
     const segs = stackOrder.filter(t => tc[t]).map(t =>
-      `<div class="doc-stk-seg" style="height:${Math.max(Math.round(tc[t]/total*totalH),1.5)}px;background:${stackColor(t)}"></div>`
+      `<div class="doc-stk-seg" style="height:${Math.max(Math.round(tc[t]/t0*totalH),1.5)}px;background:${stackColor(t)}"></div>`
     ).join('');
     return `
       <div class="doc-stk-col${i === (month-1) ? ' is-current' : ''}">
-        <span class="doc-stk-num">${total || ''}</span>
+        <span class="doc-stk-num">${t0 || ''}</span>
         <div class="doc-stk-bar" style="height:${totalH}px">${segs}</div>
       </div>`;
   }).join('');
