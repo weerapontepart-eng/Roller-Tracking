@@ -1344,7 +1344,18 @@ function buildPrintDoc() {
     ${detailHTML}
 
     <!-- SIGNATURE -->
-    ${sigHTML}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0">
+      <div style="text-align:center">
+        <div style="font-size:9pt;color:#64748b;margin-bottom:48px">จัดทำโดย</div>
+        <div style="border-top:1px solid #334155;padding-top:6px;font-size:9pt;color:#1a1a2e;font-weight:600">${author}</div>
+        <div style="font-size:8pt;color:#64748b">ฝ่ายซ่อมบำรุง</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9pt;color:#64748b;margin-bottom:48px">ผู้อนุมัติ</div>
+        <div style="border-top:1px solid #334155;padding-top:6px;font-size:9pt;color:#1a1a2e;font-weight:600">${approver}</div>
+        <div style="font-size:8pt;color:#64748b">&nbsp;</div>
+      </div>
+    </div>
 
     <!-- FOOTER -->
     <div class="doc-footer">
