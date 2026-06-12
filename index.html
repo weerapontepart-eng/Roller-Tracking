@@ -1373,13 +1373,15 @@ function buildPrintDoc() {
     monthTypeCounts.push(tc);
   }
   const monthCounts = monthTypeCounts.map(tc => Object.values(tc).reduce((a,b)=>a+b,0));
-  const monthMax = Math.max(...monthCounts, 1);
-  const yearShown = monthCounts.reduce((a,b)=>a+b,0);   // total of charted types only
+  // only show months up to the selected month (cut off future/empty months)
+  const shownN = month;
+  const monthMax = Math.max(...monthCounts.slice(0, shownN), 1);
+  const yearShown = monthCounts.slice(0, shownN).reduce((a,b)=>a+b,0);   // total up to selected month
   const typeYearTotals = {};
   stackOrder.forEach(t => { typeYearTotals[t] = 0; });
-  monthTypeCounts.forEach(tc => Object.entries(tc).forEach(([t,c]) => { typeYearTotals[t] += c; }));
+  monthTypeCounts.slice(0, shownN).forEach(tc => Object.entries(tc).forEach(([t,c]) => { typeYearTotals[t] += c; }));
   const yearBarMaxH = 140;
-  const yearColsHTML = monthCounts.map((total, i) => {
+  const yearColsHTML = monthCounts.slice(0, shownN).map((total, i) => {
     const tc = monthTypeCounts[i];
     const totalH = total > 0 ? Math.max(Math.round(total/monthMax*yearBarMaxH), 5) : 0;
     const segs = stackOrder.filter(t => tc[t]).map(t =>
@@ -1391,10 +1393,10 @@ function buildPrintDoc() {
         <div class="doc-stk-bar" style="height:${totalH}px">${segs}</div>
       </div>`;
   }).join('');
-  const yearLabelsHTML = MONTH_ABBR.map((m, i) =>
+  const yearLabelsHTML = MONTH_ABBR.slice(0, shownN).map((m, i) =>
     `<span class="doc-stk-label${i === (month-1) ? ' is-current' : ''}${monthCounts[i] === 0 ? ' is-empty' : ''}">${m}</span>`
   ).join('');
-  const legendHTML = stackOrder.filter(t => usedTypes.has(t)).map(t =>
+  const legendHTML = stackOrder.filter(t => typeYearTotals[t] > 0).map(t =>
     `<div class="doc-stk-legend-item"><span class="doc-stk-legend-dot" style="background:${stackColor(t)}"></span>${t} <b>${typeYearTotals[t]}</b></div>`
   ).join('');
   const yearChartHTML = `
@@ -1511,7 +1513,7 @@ function buildPrintDoc() {
 
     <!-- YEARLY STATS CHART (full width) -->
     <div class="doc-1col">
-      <div class="doc-section-title">สถิติการซ่อมลูกกลิ้งรายเดือน · ปี ${year} &nbsp;(รวมทั้งปี ${yearShown} รายการ)</div>
+      <div class="doc-section-title">สถิติการซ่อมลูกกลิ้งรายเดือน · ปี ${year} &nbsp;(ม.ค.–${MONTH_ABBR[month-1]} รวม ${yearShown} รายการ)</div>
       ${yearChartHTML}
     </div>
 
