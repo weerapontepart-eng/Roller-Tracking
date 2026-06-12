@@ -1247,7 +1247,7 @@ function buildPrintDoc() {
   const approver = document.getElementById('pr-approver').value || '—';
   const showDetail = document.getElementById('pr-show-detail').checked;
   const bwMatch = r => !bwFilter || (r.bw || '').toString().includes(bwFilter);
-  const bwLabel = bwFilter ? ` (BW ${bwFilter})` : '';
+  const bwLabel = bwFilter ? `BW${bwFilter} ` : '';
 
   const data = allData.filter(r => getMonthNum(r.date) === month && getYearNum(r.date) === year && bwMatch(r));
   const total = data.length;
@@ -1414,7 +1414,7 @@ function buildPrintDoc() {
         
       </div>
       <!-- REPORT TITLE (centered, black, baseline aligned with logo bottom) -->
-      <h2 class="doc-report-title">รายงานการซ่อมบำรุงลูกกลิ้งระบบสายพานประจำเดือน${MONTHS_TH[month]} ${year}${bwLabel}</h2>
+      <h2 class="doc-report-title">รายงานซ่อมบำรุงลูกกลิ้ง ${bwLabel}ประจำเดือน${MONTHS_TH[month]} ${year}</h2>
     </div>
 
     <!-- METRICS -->
