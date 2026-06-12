@@ -317,7 +317,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   #page-print { display:block !important; margin:0 !important; padding:0 !important }
   .main { padding:0 !important; max-width:none !important }
   .print-preview-frame { border:none !important;padding:0 !important;border-radius:0 !important;margin:0 !important;background:transparent !important }
-  .print-preview-label,.print-toolbar { display:none !important }
+  /* hide on-screen-only chrome: page heading, the controls/tip frame and the preview label */
+  #page-print .page-header,
+  .print-controls-frame,
+  .print-preview-label,
+  .print-toolbar { display:none !important }
   #print-doc {
     border:none !important;
     box-shadow:none !important;
@@ -664,7 +668,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   </div>
 
   <!-- PRINT TOOLBAR -->
-  <div class="print-preview-frame" style="padding:1rem">
+  <div class="print-preview-frame print-controls-frame" style="padding:1rem">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap" class="print-toolbar">
       <div style="display:flex;align-items:center;gap:8px">
         <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">เดือน</label>
