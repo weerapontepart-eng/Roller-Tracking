@@ -295,7 +295,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* area vertical bar (column) chart */
 .doc-vbar-chart {
   display:flex; align-items:flex-end; justify-content:space-around; gap:6px;
-  height:106px; padding:14px 6px 0;
+  height:80px; padding:14px 6px 0;
   /* faint horizontal gridlines every quarter */
   background:repeating-linear-gradient(to top,
      transparent 0, transparent calc(25% - 1px),
@@ -310,6 +310,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   -webkit-print-color-adjust:exact; print-color-adjust:exact;
 }
 .doc-vbar-bar.is-top { background:linear-gradient(to top,#0f766e 0%,#10a89a 55%,#34d3c2 100%) }
+.doc-vbar-bar.is-current { background:linear-gradient(to top,#b45309 0%,#ea9213 55%,#fbbf24 100%) }
+.doc-vbar-label.is-current { color:#b45309; font-weight:700 }
 .doc-vbar-num {
   position:absolute; top:-13px; left:50%; transform:translateX(-50%);
   font-size:8pt; font-weight:700; color:#1e3a8a; font-family:var(--mono); line-height:1;
@@ -1254,7 +1256,7 @@ function buildPrintDoc() {
   const printDate = `${today.getDate()} ${MONTHS_TH[today.getMonth()+1]} ${today.getFullYear()+543}`;
 
   // ── build vertical bar (column) chart for areas ──
-  const areaBarMaxH = 92; // px — tallest column
+  const areaBarMaxH = 66; // px — tallest column
   const areaColsHTML = areaEntries.map(([area, cnt], i) => `
       <div class="doc-vbar-col">
         <div class="doc-vbar-bar${i===0?' is-top':''}" style="height:${Math.max(Math.round(cnt/areaMax*areaBarMaxH),3)}px">
@@ -1267,6 +1269,26 @@ function buildPrintDoc() {
     <div class="doc-vbar-axis"></div>
     <div class="doc-vbar-labels">${areaLabelsHTML}</div>`
     : '<div style="color:#94a3b8;font-size:9pt;padding:.5rem 0">ไม่มีข้อมูล</div>';
+
+  // ── yearly stats: roller repairs per month for the selected year ──
+  const MONTH_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const yearData = allData.filter(r => getYearNum(r.date) === year);
+  const yearTotal = yearData.length;
+  const monthCounts = [];
+  for (let m = 1; m <= 12; m++) monthCounts.push(yearData.filter(r => getMonthNum(r.date) === m).length);
+  const monthMax = Math.max(...monthCounts, 1);
+  const yearBarMaxH = 66;
+  const yearColsHTML = monthCounts.map((cnt, i) => `
+      <div class="doc-vbar-col">
+        <div class="doc-vbar-bar${i === (month-1) ? ' is-current' : ''}" style="height:${cnt > 0 ? Math.max(Math.round(cnt/monthMax*yearBarMaxH), 4) : 1}px">
+          <span class="doc-vbar-num">${cnt || ''}</span>
+        </div>
+      </div>`).join('');
+  const yearLabelsHTML = MONTH_ABBR.map((m, i) => `<span class="doc-vbar-label${i === (month-1) ? ' is-current' : ''}">${m}</span>`).join('');
+  const yearChartHTML = `
+    <div class="doc-vbar-chart">${yearColsHTML}</div>
+    <div class="doc-vbar-axis"></div>
+    <div class="doc-vbar-labels">${yearLabelsHTML}</div>`;
 
   // ── type summary rows ──
   const typeRowsHTML = tEntries.map(([k,v]) => `
@@ -1378,6 +1400,12 @@ function buildPrintDoc() {
     <div class="doc-1col">
       <div class="doc-section-title">จำนวนซ่อมรายพื้นที่</div>
       ${areaBarHTML}
+    </div>
+
+    <!-- YEARLY STATS CHART (full width) -->
+    <div class="doc-1col">
+      <div class="doc-section-title">สถิติการซ่อมลูกกลิ้งรายเดือน · ปี ${year} &nbsp;(รวมทั้งปี ${yearTotal} รายการ)</div>
+      ${yearChartHTML}
     </div>
 
     <!-- MATRIX -->
