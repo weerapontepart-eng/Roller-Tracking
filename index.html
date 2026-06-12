@@ -848,6 +848,7 @@ document.getElementById('pr-month').value = new Date().getMonth() + 1;
 document.getElementById('pr-year').value  = new Date().getFullYear();
 
 localData = loadLocal();
+restoreLastForm();   // pre-fill with the last saved entry
 initScriptUI();
 fetchSheetData();
 
@@ -1012,7 +1013,7 @@ async function submitRecord() {
     localData.push(rec); persistLocal(); mergeData();
     showStatus(`⚠️ <strong>บันทึกใน Local Storage</strong> (ยังไม่ได้ตั้งค่า Script URL)<br>📅 ${rec.date} | 🔧 ${rec.type} | 📍 ${rec.area}`, 'err');
     toast('บันทึก Local แล้ว', false);
-    resetBtn(); clearForm(); return;
+    resetBtn(); saveLastForm(); return;
   }
 
   try {
@@ -1022,7 +1023,7 @@ async function submitRecord() {
     if (json.ok) {
       showStatus(`✅ <strong>บันทึกลง Google Sheets สำเร็จ!</strong><br>📅 ${rec.date} | 🔧 ${rec.type} | 📍 ${rec.area} พวง ${rec.group||'-'} ลูก ${rec.roller||'-'}<br>สาเหตุ: <strong>${rec.cause||'-'}</strong> → แก้ไข: <strong>${rec.fix||'-'}</strong> | ช่าง: ${rec.tech||'-'}`, 'ok');
       toast('✓ บันทึกลง Google Sheets สำเร็จ!');
-      clearForm();
+      saveLastForm();
       setTimeout(() => fetchSheetData(), 1500);
     } else { throw new Error(json.error || 'Apps Script error'); }
   } catch(e) {
@@ -1030,7 +1031,7 @@ async function submitRecord() {
     localData.push(rec); persistLocal(); mergeData();
     showStatus(`⚠️ <strong>Sheets ล้มเหลว — บันทึก Local แทน</strong><br>สาเหตุ: ${e.message}`, 'err');
     toast('บันทึก Local แทน', false);
-    clearForm();
+    saveLastForm();
   }
   resetBtn();
 }
@@ -1041,10 +1042,25 @@ function resetBtn() {
   btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> บันทึกลง Google Sheets`;
 }
 
+const FORM_FIELDS = ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note'];
+const LAST_FORM_KEY = 'roller_last_form';
+
 function clearForm() {
-  ['f-date','f-smu','f-type','f-bw','f-area','f-table','f-group','f-roller','f-tech','f-cause','f-fix','f-note']
-    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  FORM_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  try { localStorage.removeItem(LAST_FORM_KEY); } catch(e) {}
+}
+
+// keep the last saved entry in the form so the next record continues from it
+function saveLastForm() {
+  const d = {};
+  FORM_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+  try { localStorage.setItem(LAST_FORM_KEY, JSON.stringify(d)); } catch(e) {}
+}
+function restoreLastForm() {
+  let d; try { d = JSON.parse(localStorage.getItem(LAST_FORM_KEY) || 'null'); } catch(e) { d = null; }
+  if (!d) return;
+  FORM_FIELDS.forEach(id => { const el = document.getElementById(id); if (el && d[id] != null) el.value = d[id]; });
 }
 
 // ─── PAGE NAV ─────────────────────────────────────────────────
