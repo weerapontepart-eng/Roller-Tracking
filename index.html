@@ -758,9 +758,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
         </select>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">จัดทำโดย</label>
-        <input type="text" id="pr-author" value="ฝ่ายซ่อมบำรุง" onchange="buildPrintDoc()"
-          style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none;width:180px"/>
+        <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Belt Width</label>
+        <select id="pr-bw" onchange="buildPrintDoc()"
+          style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none;width:150px">
+          <option value="">ทุก BW</option>
+          <option value="1600">BW 1600</option>
+          <option value="1800">BW 1800</option>
+          <option value="2200">BW 2200</option>
+          <option value="2400">BW 2400</option>
+        </select>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">ผู้อนุมัติ</label>
@@ -1237,11 +1243,13 @@ function docTypeBadge(t) {
 function buildPrintDoc() {
   const month  = parseInt(document.getElementById('pr-month').value);
   const year   = parseInt(document.getElementById('pr-year').value);
-  const author = document.getElementById('pr-author').value || 'ฝ่ายซ่อมบำรุง';
+  const bwFilter = document.getElementById('pr-bw').value;   // '' = all
   const approver = document.getElementById('pr-approver').value || '—';
   const showDetail = document.getElementById('pr-show-detail').checked;
+  const bwMatch = r => !bwFilter || (r.bw || '').toString().includes(bwFilter);
+  const bwLabel = bwFilter ? ` (BW ${bwFilter})` : '';
 
-  const data = allData.filter(r => getMonthNum(r.date) === month && getYearNum(r.date) === year);
+  const data = allData.filter(r => getMonthNum(r.date) === month && getYearNum(r.date) === year && bwMatch(r));
   const total = data.length;
   const impact = data.filter(r => r.type === 'Impact').length;
   const carry  = data.filter(r => r.type === 'Carry').length;
@@ -1306,7 +1314,7 @@ function buildPrintDoc() {
   const stackOrder = [...STACK_TYPES, 'อื่นๆ'];
   const STACK_COLORS = {'Impact':'#3d8ef0','Carry':'#2ecc71','Return':'#f59e0b','Flat Return':'#8b5cf6','อื่นๆ':'#64748b'};
   const stackColor = t => STACK_COLORS[t] || TYPE_COLORS[t] || TYPE_COLORS.default;
-  const yearData = allData.filter(r => getYearNum(r.date) === year);
+  const yearData = allData.filter(r => getYearNum(r.date) === year && bwMatch(r));
   const yearTotal = yearData.length;
   const monthTypeCounts = [];   // [{type:count}, ...] index 0 = Jan
   const usedTypes = new Set();
@@ -1406,7 +1414,7 @@ function buildPrintDoc() {
         
       </div>
       <!-- REPORT TITLE (centered, black, baseline aligned with logo bottom) -->
-      <h2 class="doc-report-title">รายงานการซ่อมบำรุงลูกกลิ้งระบบสายพานประจำเดือน${MONTHS_TH[month]} ${year}</h2>
+      <h2 class="doc-report-title">รายงานการซ่อมบำรุงลูกกลิ้งระบบสายพานประจำเดือน${MONTHS_TH[month]} ${year}${bwLabel}</h2>
     </div>
 
     <!-- METRICS -->
