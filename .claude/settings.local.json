@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"Get-Content 'D:\\\\AI-WNT\\\\Dashboard Idler\\\\index.html' | Select-Object -Skip 1170 -First 221\")",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git config *)",
+      "Bash(git push *)",
+      "Bash(gh repo *)",
+      "PowerShell(gh repo view weerapontepart-eng/Roller-Tracking --json name,defaultBranchRef 2>&1)"
+    ]
+  }
+}

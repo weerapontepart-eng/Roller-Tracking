@@ -175,6 +175,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   border-radius: 10px;
   padding: 1.5rem;
   margin-bottom: 1rem;
+  overflow-x: auto;   /* allow horizontal scroll so 210mm doc is always visible */
 }
 .print-preview-label {
   font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;
@@ -343,8 +344,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   .chart-grid{grid-template-columns:1fr}
   .chart-card.wide{grid-column:1}
   .nav-tab span{display:none}
-  .doc-metrics{grid-template-columns:1fr 1fr}
-  .doc-2col{grid-template-columns:1fr}
+  /* NOTE: doc-metrics and doc-2col are NOT overridden here
+     so the print document always keeps its 4-col / 2-col layout
+     regardless of viewport width */
 }
 </style>
 </head>
