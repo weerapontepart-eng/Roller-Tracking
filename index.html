@@ -207,8 +207,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 2px solid #1e3a8a;
-  padding-bottom: 10px;
-  margin-bottom: 12px;
+  padding-bottom: 7px;
+  margin-bottom: 9px;
 }
 .doc-logo-block { display:block;width:4.35cm;height:auto;background:#fff }
 .doc-logo-img { width:4.35cm;height:2.02cm;object-fit:fill;background:#ffffff;display:block;margin:0;border:none }
@@ -219,9 +219,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .doc-title-row {
   background: #1e3a8a;
   color: #fff;
-  padding: 8px 14px;
+  padding: 7px 14px;
   border-radius: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   display:flex;justify-content:space-between;align-items:center;
 }
 .doc-title-row h2 { font-size:12pt;font-weight:700;letter-spacing:.02em;margin:0 }
@@ -232,12 +232,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .doc-metric {
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 6px 10px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -253,8 +253,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* section titles */
 .doc-section-title {
   font-size:8.5pt;font-weight:700;color:#1e3a8a;text-transform:uppercase;
-  letter-spacing:.08em;padding:3px 0;border-bottom:1px solid #cbd5e1;
-  margin:10px 0 7px;
+  letter-spacing:.08em;padding:2px 0;border-bottom:1px solid #cbd5e1;
+  margin:7px 0 5px;
 }
 
 /* tables */
@@ -262,9 +262,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .doc-table th {
   background:#f1f5f9;color:#334155;font-size:8pt;font-weight:600;
   text-transform:uppercase;letter-spacing:.06em;
-  padding:5px 8px;border:1px solid #e2e8f0;text-align:left;
+  padding:3.5px 8px;border:1px solid #e2e8f0;text-align:left;
 }
-.doc-table td { padding:4px 8px;border:1px solid #e2e8f0;color:#374151;vertical-align:middle }
+.doc-table td { padding:3px 8px;border:1px solid #e2e8f0;color:#374151;vertical-align:middle }
 .doc-table tbody tr:nth-child(even) td { background:#f8fafc }
 .doc-table td.r { text-align:right;font-family:var(--mono) }
 .doc-table td.c { text-align:center;font-family:var(--mono) }
@@ -276,11 +276,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .doc-bar-val { font-size:8.5pt;color:#64748b;white-space:nowrap;font-family:var(--mono) }
 
 /* 2-col layout */
-.doc-2col { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px }
-.doc-1col { margin-bottom:10px }
+.doc-2col { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:7px }
+.doc-1col { margin-bottom:7px }
 
 /* area bars */
-.area-bar-row { display:flex;gap:6px;align-items:center;margin-bottom:5px }
+.area-bar-row { display:flex;gap:6px;align-items:center;margin-bottom:2.5px }
 .area-bar-label { font-size:8.5pt;color:#374151;width:52px;flex-shrink:0;font-weight:500 }
 .area-bar-track { flex:1;background:#f1f5f9;border-radius:3px;height:10px;overflow:hidden }
 .area-bar-fill { height:10px;border-radius:3px;background:#3d8ef0;min-width:2px }
@@ -301,7 +301,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* footer */
 .doc-footer {
-  margin-top:12px;border-top:1px solid #e2e8f0;padding-top:8px;
+  margin-top:8px;border-top:1px solid #e2e8f0;padding-top:6px;
   display:flex;justify-content:space-between;align-items:center;
   font-size:8pt;color:#94a3b8;
 }
@@ -325,7 +325,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
        date/title/url/page-number header & footer. We restore the
        content margins here as padding instead — box-sizing:border-box
        keeps the A4 width correct. */
-    padding:13mm 12mm !important;
+    padding:9mm 12mm !important;
     margin:0 !important;
     width:100% !important;
     min-height:0 !important;
@@ -1372,14 +1372,14 @@ function buildPrintDoc() {
     ${detailHTML}
 
     <!-- SIGNATURE -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
       <div style="text-align:center">
-        <div style="font-size:9pt;color:#64748b;margin-bottom:32px">จัดทำโดย</div>
+        <div style="font-size:9pt;color:#64748b;margin-bottom:24px">จัดทำโดย</div>
         <div style="border-top:1px solid #334155;padding-top:6px;font-size:9pt;color:#1a1a2e;font-weight:600">${author}</div>
         <div style="font-size:8pt;color:#64748b">ฝ่ายซ่อมบำรุง</div>
       </div>
       <div style="text-align:center">
-        <div style="font-size:9pt;color:#64748b;margin-bottom:32px">ผู้อนุมัติ</div>
+        <div style="font-size:9pt;color:#64748b;margin-bottom:24px">ผู้อนุมัติ</div>
         <div style="border-top:1px solid #334155;padding-top:6px;font-size:9pt;color:#1a1a2e;font-weight:600">${approver}</div>
         <div style="font-size:8pt;color:#64748b">&nbsp;</div>
       </div>
