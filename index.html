@@ -316,7 +316,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* stacked column chart (yearly, split by roller type) */
 .doc-stk-chart {
   display:flex; align-items:flex-end; justify-content:space-around; gap:6px;
-  height:150px; padding:8px 6px 0;
+  height:172px; padding:8px 6px 0;
   /* faint horizontal gridlines every quarter */
   background:repeating-linear-gradient(to top,
      transparent 0, transparent calc(25% - 1px),
@@ -329,7 +329,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .doc-stk-col.is-current { background:rgba(245,158,11,.10) }
 .doc-stk-num { font-size:7.5pt; font-weight:700; color:#1e293b; font-family:var(--mono); line-height:1; margin-bottom:3px }
 .doc-stk-bar {
-  position:relative; width:78%; max-width:34px;
+  position:relative; width:44%; max-width:18px;
   display:flex; flex-direction:column-reverse; gap:1.4px;
   background:#ffffff;                /* gaps show white -> crisp segment dividers */
   border-radius:5px 5px 0 0; overflow:hidden;
@@ -1326,7 +1326,7 @@ function buildPrintDoc() {
   // ── yearly stats: stacked column chart per month, split by roller type ──
   const MONTH_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   const STACK_TYPES = ['Impact','Carry','Return','Flat Return'];
-  const stackOrder = [...STACK_TYPES, 'อื่นๆ'];
+  const stackOrder = [...STACK_TYPES];   // อื่นๆ excluded from the chart
   const STACK_COLORS = {'Impact':'#3d8ef0','Carry':'#2ecc71','Return':'#f59e0b','Flat Return':'#8b5cf6','อื่นๆ':'#64748b'};
   const stackColor = t => STACK_COLORS[t] || TYPE_COLORS[t] || TYPE_COLORS.default;
   const yearData = allData.filter(r => getYearNum(r.date) === year && bwMatch(r));
@@ -1337,9 +1337,9 @@ function buildPrintDoc() {
     const md = yearData.filter(r => getMonthNum(r.date) === m);
     const tc = {};
     md.forEach(r => {
-      let t = r.type || 'อื่นๆ';
+      let t = r.type || '';
       if (t.startsWith('Return')) t = 'Return';       // merge Return เหล็ก + Return ยาง
-      else if (!STACK_TYPES.includes(t)) t = 'อื่นๆ';
+      if (!STACK_TYPES.includes(t)) return;            // skip "อื่นๆ" types entirely
       tc[t] = (tc[t] || 0) + 1;
       usedTypes.add(t);
     });
@@ -1347,10 +1347,11 @@ function buildPrintDoc() {
   }
   const monthCounts = monthTypeCounts.map(tc => Object.values(tc).reduce((a,b)=>a+b,0));
   const monthMax = Math.max(...monthCounts, 1);
+  const yearShown = monthCounts.reduce((a,b)=>a+b,0);   // total of charted types only
   const typeYearTotals = {};
   stackOrder.forEach(t => { typeYearTotals[t] = 0; });
   monthTypeCounts.forEach(tc => Object.entries(tc).forEach(([t,c]) => { typeYearTotals[t] += c; }));
-  const yearBarMaxH = 118;
+  const yearBarMaxH = 140;
   const yearColsHTML = monthCounts.map((total, i) => {
     const tc = monthTypeCounts[i];
     const totalH = total > 0 ? Math.max(Math.round(total/monthMax*yearBarMaxH), 5) : 0;
@@ -1483,7 +1484,7 @@ function buildPrintDoc() {
 
     <!-- YEARLY STATS CHART (full width) -->
     <div class="doc-1col">
-      <div class="doc-section-title">สถิติการซ่อมลูกกลิ้งรายเดือน · ปี ${year} &nbsp;(รวมทั้งปี ${yearTotal} รายการ)</div>
+      <div class="doc-section-title">สถิติการซ่อมลูกกลิ้งรายเดือน · ปี ${year} &nbsp;(รวมทั้งปี ${yearShown} รายการ)</div>
       ${yearChartHTML}
     </div>
 
