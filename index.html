@@ -213,12 +213,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 }
 .doc-report-title {
   position: absolute;
-  left: 0;
+  left: 4.7cm;            /* start past the logo so the title never overlaps it */
   right: 0;
   bottom: 6px;            /* same offset as header padding -> aligns with logo bottom */
-  text-align: center;     /* centered across the full page width */
+  text-align: center;     /* centered within the space beside the logo */
   color: #000;
-  font-size: 13pt;
+  font-size: 12pt;
   font-weight: 700;
   letter-spacing: .02em;
   margin: 0;
