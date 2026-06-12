@@ -321,14 +321,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   #print-doc {
     border:none !important;
     box-shadow:none !important;
-    /* Let @page margin control spacing — zero out element padding */
-    padding:0 !important;
+    /* @page margin is 0 so the browser cannot inject its own
+       date/title/url/page-number header & footer. We restore the
+       content margins here as padding instead — box-sizing:border-box
+       keeps the A4 width correct. */
+    padding:13mm 12mm !important;
     margin:0 !important;
     width:100% !important;
     min-height:0 !important;
     border-radius:0 !important;
   }
-  @page { size: A4 portrait; margin: 14mm 12mm }
+  @page { size: A4 portrait; margin: 0 }
   .doc-2col { break-inside: avoid }
   .doc-1col { break-inside: avoid }
   .doc-table { break-inside: auto }
