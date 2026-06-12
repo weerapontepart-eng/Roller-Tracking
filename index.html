@@ -1247,70 +1247,7 @@ function buildPrintDoc() {
   }).join('') || `<tr><td colspan="8" style="text-align:center;color:#94a3b8;font-style:italic;padding:.75rem">ไม่มีข้อมูล</td></tr>`;
 
   // ── detail table (top 50) ──
-  const detailHTML = showDetail ? `
-    <div class="doc-section-title">รายการทั้งหมดในเดือนนี้ (${total} รายการ)</div>
-    <table class="doc-table" style="font-size:8.5pt">
-      <thead>
-        <tr>
-          <th style="width:28px">#</th>
-          <th style="width:76px">วันที่</th>
-          <th style="width:70px">ประเภท</th>
-          <th style="width:46px">พื้นที่</th>
-          <th style="width:30px">โต๊ะ</th>
-          <th style="width:30px">พวง</th>
-          <th style="width:30px">ลูก</th>
-          <th style="width:52px">สาเหตุ</th>
-          <th style="width:52px">แก้ไข</th>
-          <th>ช่าง</th>
-          <th>หมายเหตุ</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${data.slice(0,200).map((r,i)=>`
-        <tr>
-          <td class="c" style="color:#94a3b8">${i+1}</td>
-          <td style="white-space:nowrap;font-family:monospace;font-size:8pt">${r.date||''}</td>
-          <td>${docTypeBadge(r.type)}</td>
-          <td style="font-weight:600">${r.area||''}</td>
-          <td class="c">${r.table||''}</td>
-          <td class="c">${r.group||''}</td>
-          <td class="c">${r.roller||''}</td>
-          <td>${r.cause?`<span class="doc-cause">${r.cause}</span>`:''}</td>
-          <td>${r.fix?`<span class="doc-fix">${r.fix}</span>`:''}</td>
-          <td style="font-size:8pt">${r.tech||''}</td>
-          <td style="font-size:8pt;color:#64748b;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${r.note||''}</td>
-        </tr>`).join('')}
-      </tbody>
-      ${data.length > 200 ? `<tfoot><tr><td colspan="11" style="text-align:center;font-style:italic;color:#94a3b8;font-size:8pt">แสดงเฉพาะ 200 รายการแรก จากทั้งหมด ${total} รายการ</td></tr></tfoot>` : ''}
-    </table>
-    ${data.length > 200 ? `<p class="detail-note">* รายการที่เกิน 200 รายการไม่แสดงในหน้าพิมพ์ ส่งออก CSV เพื่อดูข้อมูลทั้งหมด</p>` : ''}
-  ` : '';
-
-  // ── signature block ──
-  const sigHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:24px">
-      <div style="text-align:center">
-        <div style="border-top:1px solid #94a3b8;margin-top:40px;padding-top:8px;font-size:8.5pt;color:#374151">
-          <div style="font-weight:600">${author}</div>
-          <div style="color:#64748b">ผู้จัดทำรายงาน</div>
-          <div style="color:#64748b;margin-top:4px">วันที่..................................</div>
-        </div>
-      </div>
-      <div style="text-align:center">
-        <div style="border-top:1px solid #94a3b8;margin-top:40px;padding-top:8px;font-size:8.5pt;color:#374151">
-          <div style="font-weight:600">หัวหน้าแผนก</div>
-          <div style="color:#64748b">ผู้ตรวจสอบ</div>
-          <div style="color:#64748b;margin-top:4px">วันที่..................................</div>
-        </div>
-      </div>
-      <div style="text-align:center">
-        <div style="border-top:1px solid #94a3b8;margin-top:40px;padding-top:8px;font-size:8.5pt;color:#374151">
-          <div style="font-weight:600">${approver}</div>
-          <div style="color:#64748b">ผู้อนุมัติ</div>
-          <div style="color:#64748b;margin-top:4px">วันที่..................................</div>
-        </div>
-      </div>
-    </div>`;
+  const detailHTML = "";
 
   // ── assemble document ──
   document.getElementById('print-doc').innerHTML = `
