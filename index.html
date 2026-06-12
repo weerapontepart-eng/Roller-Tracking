@@ -1350,19 +1350,10 @@ function buildPrintDoc() {
       </div>
     </div>
 
-    <!-- 2 COL: Area + Tech -->
-    <div class="doc-2col">
-      <div>
-        <div class="doc-section-title">จำนวนซ่อมรายพื้นที่</div>
-        ${areaBarHTML}
-      </div>
-      <div>
-        <div class="doc-section-title">ผลงานรายช่าง</div>
-        <table class="doc-table">
-          <thead><tr><th>ชื่อช่าง</th><th style="text-align:right">รวม</th><th style="text-align:right">Impact</th><th style="text-align:right">Carry</th></tr></thead>
-          <tbody>${techRowsHTML}</tbody>
-        </table>
-      </div>
+    <!-- AREA CHART (full width) -->
+    <div class="doc-1col">
+      <div class="doc-section-title">จำนวนซ่อมรายพื้นที่</div>
+      ${areaBarHTML}
     </div>
 
     <!-- MATRIX -->
