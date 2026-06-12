@@ -1295,9 +1295,10 @@ function buildPrintDoc() {
 
   // ── yearly stats: stacked column chart per month, split by roller type ──
   const MONTH_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  const STACK_TYPES = ['Impact','Carry','Return เหล็ก','Return ยาง','Flat Return'];
+  const STACK_TYPES = ['Impact','Carry','Return','Flat Return'];
   const stackOrder = [...STACK_TYPES, 'อื่นๆ'];
-  const stackColor = t => TYPE_COLORS[t] || TYPE_COLORS.default;
+  const STACK_COLORS = {'Impact':'#3d8ef0','Carry':'#2ecc71','Return':'#f59e0b','Flat Return':'#8b5cf6','อื่นๆ':'#64748b'};
+  const stackColor = t => STACK_COLORS[t] || TYPE_COLORS[t] || TYPE_COLORS.default;
   const yearData = allData.filter(r => getYearNum(r.date) === year);
   const yearTotal = yearData.length;
   const monthTypeCounts = [];   // [{type:count}, ...] index 0 = Jan
@@ -1307,7 +1308,8 @@ function buildPrintDoc() {
     const tc = {};
     md.forEach(r => {
       let t = r.type || 'อื่นๆ';
-      if (!STACK_TYPES.includes(t)) t = 'อื่นๆ';
+      if (t.startsWith('Return')) t = 'Return';       // merge Return เหล็ก + Return ยาง
+      else if (!STACK_TYPES.includes(t)) t = 'อื่นๆ';
       tc[t] = (tc[t] || 0) + 1;
       usedTypes.add(t);
     });
