@@ -367,6 +367,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 }
 .doc-footer strong { color:#334155 }
 
+/* signature row (Reported / Checked / Approved By) */
+.doc-sign { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:18px; padding-top:4px }
+.doc-sign-col { font-size:9pt; color:#1a1a2e }
+.doc-sign-line { display:flex; align-items:flex-end; gap:6px; margin-bottom:16px }
+.doc-sign-role { font-weight:700; white-space:nowrap; color:#1a1a2e }
+.doc-sign-dots { flex:1; height:0; border-bottom:1px dotted #92400e; margin-bottom:2px }
+.doc-sign-paren { text-align:center; color:#92400e; font-size:9pt; letter-spacing:.02em }
+
 /* top-10 detail table */
 .detail-note { font-size:8pt;color:#94a3b8;font-style:italic;margin-top:4px }
 
@@ -1477,16 +1485,18 @@ function buildPrintDoc() {
     ${detailHTML}
 
     <!-- SIGNATURE -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
-      <div style="text-align:center">
-        <div style="font-size:9pt;color:#64748b;margin-bottom:24px">จัดทำโดย</div>
-        <div style="border-top:1px solid #334155;padding-top:6px;font-size:9pt;color:#1a1a2e;font-weight:600">${author}</div>
-        <div style="font-size:8pt;color:#64748b">ฝ่ายซ่อมบำรุง</div>
+    <div class="doc-sign">
+      <div class="doc-sign-col">
+        <div class="doc-sign-line"><span class="doc-sign-role">Reported By :</span> <span class="doc-sign-dots"></span></div>
+        <div class="doc-sign-paren">(&nbsp;${author && author !== '—' ? author : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}&nbsp;)</div>
       </div>
-      <div style="text-align:center">
-        <div style="font-size:9pt;color:#64748b;margin-bottom:24px">ผู้อนุมัติ</div>
-        <div style="border-top:1px solid #334155;padding-top:6px;font-size:9pt;color:#1a1a2e;font-weight:600">${approver}</div>
-        <div style="font-size:8pt;color:#64748b">&nbsp;</div>
+      <div class="doc-sign-col">
+        <div class="doc-sign-line"><span class="doc-sign-role">Checked By :</span> <span class="doc-sign-dots"></span></div>
+        <div class="doc-sign-paren">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</div>
+      </div>
+      <div class="doc-sign-col">
+        <div class="doc-sign-line"><span class="doc-sign-role">Approved By :</span> <span class="doc-sign-dots"></span></div>
+        <div class="doc-sign-paren">(&nbsp;${approver && approver !== '—' ? approver : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}&nbsp;)</div>
       </div>
     </div>
 
