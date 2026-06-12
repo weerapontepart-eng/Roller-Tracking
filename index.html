@@ -1280,7 +1280,10 @@ function buildPrintDoc() {
   // --- Cause counts ---
   const causeCnt = {};
   data.forEach(r => { if(r.cause) causeCnt[r.cause] = (causeCnt[r.cause]||0)+1; });
-  const causeEntries = Object.entries(causeCnt).sort((a,b)=>b[1]-a[1]);
+  // always list every standard cause, even when the count is 0
+  const ALL_CAUSES = ['BR-D','LC','LO','NI','SH','LI-D','BO-D','BL-D','Shaft'];
+  const causeKeys = [...new Set([...ALL_CAUSES, ...Object.keys(causeCnt)])];
+  const causeEntries = causeKeys.map(c => [c, causeCnt[c] || 0]).sort((a,b)=>b[1]-a[1]);
 
   // --- Area counts ---
   const areaCnt = {};
@@ -1398,7 +1401,7 @@ function buildPrintDoc() {
       <td class="r">${total?Math.round(v/total*100):0}%</td>
       <td>
         <div class="doc-bar-wrap">
-          <div class="doc-bar" style="width:${total?Math.round(v/total*100)*1.4:0}px;background:#dc2626"></div>
+          <div class="doc-bar" style="width:${total?Math.round(v/total*100)*1.4:0}px;background:#dc2626;${v?'':'display:none'}"></div>
           <span class="doc-bar-val">${total?Math.round(v/total*100):0}%</span>
         </div>
       </td>
