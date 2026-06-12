@@ -1280,7 +1280,10 @@ function buildPrintDoc() {
   // --- Type counts ---
   const typeCnt = {};
   data.forEach(r => { if(r.type) typeCnt[r.type] = (typeCnt[r.type]||0)+1; });
-  const tEntries = Object.entries(typeCnt).sort((a,b)=>b[1]-a[1]);
+  // always list every standard roller type, even when the count is 0
+  const ALL_TYPES = ['Impact','Carry','Return เหล็ก','Return ยาง','Flat Return','Inverted','Vertical','Transition'];
+  const typeKeys = [...new Set([...ALL_TYPES, ...Object.keys(typeCnt)])];
+  const tEntries = typeKeys.map(t => [t, typeCnt[t] || 0]).sort((a,b)=>b[1]-a[1]);
 
   // --- Cause counts ---
   const causeCnt = {};
@@ -1392,7 +1395,7 @@ function buildPrintDoc() {
       <td class="r">${total?Math.round(v/total*100):0}%</td>
       <td>
         <div class="doc-bar-wrap">
-          <div class="doc-bar" style="width:${total?Math.round(v/total*100)*1.4:0}px;background:${TYPE_COLORS[k]||'#64748b'}"></div>
+          <div class="doc-bar" style="width:${total?Math.round(v/total*100)*1.4:0}px;background:${TYPE_COLORS[k]||'#64748b'};${v?'':'display:none'}"></div>
           <span class="doc-bar-val">${total?Math.round(v/total*100):0}%</span>
         </div>
       </td>
