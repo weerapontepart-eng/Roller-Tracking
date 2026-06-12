@@ -372,8 +372,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .doc-sign-col { font-size:9pt; color:#1a1a2e }
 .doc-sign-line { display:flex; align-items:flex-end; gap:6px; margin-bottom:16px }
 .doc-sign-role { font-weight:700; white-space:nowrap; color:#1a1a2e }
-.doc-sign-dots { flex:1; height:0; border-bottom:1px dotted #92400e; margin-bottom:2px }
-.doc-sign-paren { text-align:center; color:#92400e; font-size:9pt; letter-spacing:.02em }
+.doc-sign-dots { flex:1; height:0; border-bottom:1px dotted #000; margin-bottom:2px }
 
 /* top-10 detail table */
 .detail-note { font-size:8pt;color:#94a3b8;font-style:italic;margin-top:4px }
@@ -1488,15 +1487,12 @@ function buildPrintDoc() {
     <div class="doc-sign">
       <div class="doc-sign-col">
         <div class="doc-sign-line"><span class="doc-sign-role">Reported By :</span> <span class="doc-sign-dots"></span></div>
-        <div class="doc-sign-paren">(&nbsp;${author && author !== '—' ? author : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}&nbsp;)</div>
       </div>
       <div class="doc-sign-col">
         <div class="doc-sign-line"><span class="doc-sign-role">Checked By :</span> <span class="doc-sign-dots"></span></div>
-        <div class="doc-sign-paren">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</div>
       </div>
       <div class="doc-sign-col">
         <div class="doc-sign-line"><span class="doc-sign-role">Approved By :</span> <span class="doc-sign-dots"></span></div>
-        <div class="doc-sign-paren">(&nbsp;${approver && approver !== '—' ? approver : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}&nbsp;)</div>
       </div>
     </div>
 
