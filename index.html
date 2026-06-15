@@ -286,7 +286,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .tc-table { table-layout:fixed }
 .tc-table th:nth-child(2), .tc-table td:nth-child(2) { width:48px }
 .tc-table th:nth-child(3), .tc-table td:nth-child(3) { width:40px }
-.tc-table th:nth-child(4), .tc-table td:nth-child(4) { width:38% }
+.tc-table th:nth-child(4), .tc-table td:nth-child(4) { width:26% }
 
 /* horizontal bars in doc */
 .doc-bar-wrap { display:flex;align-items:center;gap:8px;height:100% }
@@ -368,6 +368,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* cause pill in doc */
 .doc-cause { display:inline-block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:1px 6px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
+.doc-cause-label { font-size:7.5pt;color:#64748b;white-space:nowrap }
 .doc-fix { display:inline-block;background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc;padding:1px 6px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
 .doc-type-badge { display:inline-block;padding:1px 7px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
 .dt-impact { background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe }
@@ -1421,9 +1422,10 @@ function buildPrintDoc() {
     </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:#94a3b8;font-style:italic;padding:.75rem">ไม่มีข้อมูล</td></tr>`;
 
   // ── cause rows ──
+  const CAUSE_LABELS = {'BR-D':'แบริ่งแตก','LC':'ล๊อก','LO':'ยางร่อน','NI':'เสียงดัง','SH':'ปลอกขาด','LI-D':'Link เสีย','BO-D':'Bolt เสีย','BL-D':'Bolt+Link เสีย','Shaft':'เพลาสึก/เพลายาน'};
   const causeRowsHTML = causeEntries.map(([k,v]) => `
     <tr>
-      <td><span class="doc-cause">${k}</span></td>
+      <td><span class="doc-cause">${k}</span> <span class="doc-cause-label">${CAUSE_LABELS[k]||''}</span></td>
       <td class="r">${v}</td>
       <td class="r">${total?Math.round(v/total*100):0}%</td>
       <td>
