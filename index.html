@@ -369,6 +369,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* cause pill in doc */
 .doc-cause { display:inline-block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:1px 6px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
 .doc-cause-label { font-size:7.5pt;color:#64748b;white-space:nowrap }
+/* fix-code legend under the matrix */
+.doc-fix-legend { margin-top:5px;font-size:7.5pt;color:#475569;display:flex;flex-wrap:wrap;gap:3px 14px;align-items:center }
+.doc-fix-legend strong { color:#1e3a8a }
+.doc-fix-legend b { color:#0e7490;font-family:var(--mono);font-weight:700 }
 .doc-fix { display:inline-block;background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc;padding:1px 6px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
 .doc-type-badge { display:inline-block;padding:1px 7px;border-radius:3px;font-size:8pt;font-family:var(--mono);font-weight:600 }
 .dt-impact { background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe }
@@ -1423,6 +1427,7 @@ function buildPrintDoc() {
 
   // ── cause rows ──
   const CAUSE_LABELS = {'BR-D':'แบริ่งแตก','LC':'ล๊อก','LO':'ยางร่อน','NI':'เสียงดัง','SH':'ปลอกขาด','LI-D':'Link เสีย','BO-D':'Bolt เสีย','BL-D':'Bolt+Link เสีย','Shaft':'เพลาสึก/เพลายาน'};
+  const FIX_LABELS = {'BR-N':'เปลี่ยนแบริ่งใหม่','BR-O':'เปลี่ยนแบริ่งเก่า','LI':'เปลี่ยน Link','BO':'เปลี่ยน Bolt','BL':'เปลี่ยน Bolt+Link','RE':'Regrease'};
   const causeRowsHTML = causeEntries.map(([k,v]) => `
     <tr>
       <td><span class="doc-cause">${k}</span> <span class="doc-cause-label">${CAUSE_LABELS[k]||''}</span></td>
@@ -1449,7 +1454,7 @@ function buildPrintDoc() {
   const mxRowsHTML = causes.map(c => {
     const row = mx[c] || {}, rt = Object.values(row).reduce((a,b)=>a+b,0);
     return `<tr>
-      <td><span class="doc-cause">${c}</span></td>
+      <td><span class="doc-cause">${c}</span> <span class="doc-cause-label">${CAUSE_LABELS[c]||''}</span></td>
       ${fixes.map(f=>`<td class="c" style="color:${row[f]?'#374151':'#cbd5e1'}">${row[f]||'—'}</td>`).join('')}
       <td class="r" style="font-weight:700;color:${rt?'#1a1a2e':'#cbd5e1'}">${rt||'—'}</td>
     </tr>`;
@@ -1533,6 +1538,10 @@ function buildPrintDoc() {
         </thead>
         <tbody>${mxRowsHTML}</tbody>
       </table>
+      <div class="doc-fix-legend">
+        <strong>การแก้ไข:</strong>
+        ${fixes.map(f=>`<span><b>${f}</b> = ${FIX_LABELS[f]||''}</span>`).join('')}
+      </div>
     </div>
 
     <!-- DETAIL TABLE -->
